@@ -8,6 +8,7 @@
   "author": "Joonas Häkkinen <joonas.hakkinen@funidata.fi>",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@nestjs/cli": "^10.4.5"
+    "@nestjs/cli": "^10.4.5",
+    "prettier": "3.3.3"
   }
 }
