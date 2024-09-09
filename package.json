@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Kaiku Slackbot",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "cd app && npm ci",
+    "format:check": "prettier --check ."
   },
   "author": "Joonas Häkkinen <joonas.hakkinen@funidata.fi>",
   "license": "GPL-3.0",
