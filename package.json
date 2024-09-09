@@ -1,0 +1,13 @@
+{
+  "name": "kaiku",
+  "version": "0.0.1",
+  "description": "Kaiku Slackbot",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joonas Häkkinen <joonas.hakkinen@funidata.fi>",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "@nestjs/cli": "^10.4.5"
+  }
+}
