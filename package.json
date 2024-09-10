@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "description": "Kaiku Slackbot",
   "scripts": {
-    "start": "docker compose up -d app",
+    "start": "docker compose up -d && npm run logs",
     "stop": "docker compose down",
     "build": "docker compose build",
+    "logs": "docker compose logs -f app",
     "postinstall": "cd app && npm ci",
     "format:check": "prettier --check ."
   },
