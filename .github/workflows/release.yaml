@@ -1,9 +1,9 @@
-name: Push (main)
+name: Release new version
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types:
+      - released
 
 jobs:
   tests:
@@ -11,7 +11,9 @@ jobs:
     uses: ./.github/workflows/run-tests.yaml
 
   release:
-    name: Publish image (next)
+    name: Publish image (latest)
     uses: ./.github/workflows/publish-image.yaml
+    with:
+      latest: true
     needs:
       - tests
