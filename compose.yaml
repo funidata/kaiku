@@ -1,0 +1,15 @@
+# Development environment
+name: kaiku-dev
+
+services:
+  app:
+    build:
+      context: app
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3001:3001
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+    volumes:
+      - ./app/src:/usr/src/app/src

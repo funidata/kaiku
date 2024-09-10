@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Kaiku Slackbot",
   "scripts": {
+    "start": "docker compose up -d app",
+    "stop": "docker compose down",
+    "build": "docker compose build",
     "postinstall": "cd app && npm ci",
     "format:check": "prettier --check ."
   },
