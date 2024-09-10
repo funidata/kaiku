@@ -11,7 +11,7 @@ export class DatabaseConfiguration {
   host = process.env.DATABASE_HOST;
 
   @IsPort()
-  port = process.env.DATABASE_PORT;
+  port = parseInt(process.env.DATABASE_PORT);
 
   @IsString()
   username = process.env.DATABASE_USERNAME;
