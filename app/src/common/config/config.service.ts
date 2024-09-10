@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { validateSync } from "class-validator";
 import { InvalidConfigurationException } from "../exceptions/invalid-configuration.exception";
-import { KaikuAppConfiguration } from "./kaiku-app-configuration.model";
+import { KaikuAppConfiguration } from "./models/kaiku-app-configuration.model";
 
 @Injectable()
 export class ConfigService {
