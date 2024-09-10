@@ -6,10 +6,29 @@ services:
     build:
       context: app
       dockerfile: Dockerfile.dev
-    ports:
-      - 3001:3001
     environment:
       NODE_ENV: development
-      PORT: 3001
+      DATABASE_NAME: kaiku_dev
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
     volumes:
       - ./app/src:/usr/src/app/src
+
+  db:
+    image: postgres:16
+    container_name: db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./dev/db-init:/docker-entrypoint-initdb.d
+      - type: volume
+        source: kaiku-db
+        target: /var/lib/postgresql/data
+
+volumes:
+  kaiku-db:

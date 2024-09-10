@@ -1,4 +1,4 @@
-import { IsBoolean, IsPort, IsString } from "class-validator";
+import { IsBoolean, IsNumber, IsString } from "class-validator";
 
 /**
  * Database configuration model.
@@ -10,7 +10,7 @@ export class DatabaseConfiguration {
   @IsString()
   host = process.env.DATABASE_HOST;
 
-  @IsPort()
+  @IsNumber()
   port = parseInt(process.env.DATABASE_PORT);
 
   @IsString()
