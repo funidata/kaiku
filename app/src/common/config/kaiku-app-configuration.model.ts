@@ -1,4 +1,5 @@
 import { IsIn, ValidateNested } from "class-validator";
+import { BoltConfiguration } from "./bolt-configuration.model";
 import { DatabaseConfiguration } from "./database-configuration.model";
 
 /**
@@ -11,4 +12,7 @@ export class KaikuAppConfiguration {
 
   @ValidateNested()
   database = new DatabaseConfiguration();
+
+  @ValidateNested()
+  bolt = new BoltConfiguration();
 }
