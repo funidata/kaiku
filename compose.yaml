@@ -6,6 +6,8 @@ services:
     build:
       context: app
       dockerfile: Dockerfile.dev
+    env_file:
+      - .env
     environment:
       NODE_ENV: development
       DATABASE_NAME: kaiku_dev
