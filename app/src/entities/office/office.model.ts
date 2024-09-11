@@ -5,7 +5,7 @@ export class Office {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: "text" })
   name: string;
 }
 

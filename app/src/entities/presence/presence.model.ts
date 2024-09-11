@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryColumn, Repository } from "typeorm";
 import { Office } from "../office/office.model";
 
 export enum PresenceType {
-  AT_OFFICE = "at_office",
+  OFFICE = "office",
   REMOTE = "remote",
 }
 

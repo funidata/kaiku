@@ -1,19 +1,18 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, Repository } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryColumn, Repository } from "typeorm";
 import { UserSettings } from "../user-settings/user-settings.model";
 
 @Entity()
 export class User {
-  @PrimaryColumn()
+  @PrimaryColumn({ type: "text" })
   slackId: string;
 
-  @Column()
+  @Column({ type: "text" })
   displayName: string;
 
-  @Column()
+  @Column({ type: "text" })
   realName: string;
 
   @OneToOne(() => UserSettings, { cascade: true })
-  @JoinColumn({ name: "userSettingsId" })
   settings?: UserSettings;
 }
 
