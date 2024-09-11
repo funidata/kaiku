@@ -16,7 +16,7 @@ export class PresenceController {
     const date = dayjs(payload["value"]).toDate();
     await this.presenceService.upsert({
       userId: body.user.id,
-      type: PresenceType.AT_OFFICE,
+      type: PresenceType.OFFICE,
       date,
     });
   }

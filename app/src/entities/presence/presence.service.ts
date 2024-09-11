@@ -34,11 +34,11 @@ export class PresenceService {
       .execute();
   }
 
-  async setOffice({ userId, date, officeId }: SetOfficeDto) {
-    await this.upsert({ userId, date });
+  async setOffice({ userId: userId, date, officeId }: SetOfficeDto) {
+    await this.upsert({ userId: userId, date });
 
     return this.presenceRepository.update(
-      { userId, date },
+      { userId: userId, date },
       {
         office: { id: officeId },
       },
