@@ -4,8 +4,9 @@ import { ConfigModule } from "./common/config/config.module";
 import { DatabaseModule } from "./database/database.module";
 import { OfficeModule } from "./entities/office/office.module";
 import { UserSettingsModule } from "./entities/user-settings/user-settings.module";
+import { UserModule } from "./entities/user/user.module";
 
 @Module({
-  imports: [ConfigModule, DatabaseModule, BoltModule, OfficeModule, UserSettingsModule],
+  imports: [ConfigModule, DatabaseModule, BoltModule, OfficeModule, UserSettingsModule, UserModule],
 })
 export class AppModule {}
