@@ -21,4 +21,4 @@ COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
 
 # Run database migrations before booting server.
-CMD ["node", "dist/main.js"]
+CMD npx typeorm migration:run -d dist/database/migration-config.js && node dist/main.js
