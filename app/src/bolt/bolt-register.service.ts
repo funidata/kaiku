@@ -1,8 +1,6 @@
 import { DiscoveredMethod, DiscoveryService } from "@golevelup/nestjs-discovery";
 import { Injectable } from "@nestjs/common";
 import { ModuleRef } from "@nestjs/core";
-import { App } from "@slack/bolt";
-import { StringIndexed } from "@slack/bolt/dist/types/helpers";
 import { BoltService } from "./bolt.service";
 import { BOLT_ACTION_KEY } from "./decorators/bolt-action.decorator";
 import { BOLT_EVENT_KEY } from "./decorators/bolt-event.decorator";
@@ -11,15 +9,11 @@ type EventType = typeof BOLT_ACTION_KEY | typeof BOLT_EVENT_KEY;
 
 @Injectable()
 export class BoltRegisterService {
-  private bolt: App<StringIndexed>;
-
   constructor(
-    boltService: BoltService,
+    private boltService: BoltService,
     private discoveryService: DiscoveryService,
     private moduleRef: ModuleRef,
-  ) {
-    this.bolt = boltService.getBolt();
-  }
+  ) {}
 
   /**
    * Register all controller methods decorated with one of our Bolt event decorators.
@@ -65,10 +59,12 @@ export class BoltRegisterService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     handler: any,
   ) {
+    const bolt = this.boltService.getBolt();
+
     if (eventType === BOLT_ACTION_KEY) {
-      this.bolt.action(eventName, handler);
+      bolt.action(eventName, handler);
     } else if (eventType === BOLT_EVENT_KEY) {
-      this.bolt.event(eventName, handler);
+      bolt.event(eventName, handler);
     }
   }
 }
