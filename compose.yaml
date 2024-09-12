@@ -7,7 +7,8 @@ services:
       context: app
       dockerfile: Dockerfile.dev
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       NODE_ENV: development
       DATABASE_NAME: kaiku_dev

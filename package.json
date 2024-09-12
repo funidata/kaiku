@@ -8,7 +8,9 @@
     "build": "docker compose build",
     "logs": "docker compose logs -f app",
     "postinstall": "cd app && npm ci",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint": "cd app && npm run lint",
+    "test": "npm run format:check && npm run lint"
   },
   "author": "Joonas Häkkinen <joonas.hakkinen@funidata.fi>",
   "license": "GPL-3.0",

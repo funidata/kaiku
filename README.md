@@ -7,3 +7,4 @@ revolves around easily sharing information about when and where from you are wor
 
 - [Requirements](./docs/requirements.md)
 - [Configuration](./docs/configuration.md)
+- [Testing](./docs/testing.md)
