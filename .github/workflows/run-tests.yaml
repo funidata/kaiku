@@ -34,3 +34,22 @@ jobs:
         run: npm ci
       - name: Run prettier
         run: npm run format:check
+
+  migrations:
+    name: Check database migrations
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Build Docker image
+        run: npm run build
+      - name: Start Postgres
+        run: docker compose up -d db
+      - name: Run migrations
+        run: docker compose run app npm run migration:run
+      - name: Stop Postgres
+        run: npm stop
