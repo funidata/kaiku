@@ -3,6 +3,7 @@ proseWrap: always
 plugins:
   - prettier-plugin-jsdoc
 jsdocPrintWidth: 80
+jsdocCommentLineStrategy: multiline
 overrides:
   # Explicitly use JSON parser for TS config files to avoid confusing problems with formatting.
   # See https://github.com/prettier/prettier/issues/15942

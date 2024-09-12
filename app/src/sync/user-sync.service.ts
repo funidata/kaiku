@@ -22,9 +22,7 @@ export class UserSyncService {
    */
   async syncUsers(updateOverride?: SlackMember) {
     if (updateOverride) {
-      this.logger.log(
-        `Starting user data synchronization for user ${updateOverride.id}.`,
-      );
+      this.logger.log(`Starting user data synchronization for user ${updateOverride.id}.`);
     } else {
       this.logger.log("Starting user data synchronization for all users.");
     }
@@ -39,9 +37,7 @@ export class UserSyncService {
       realName: user.profile.real_name || "",
     }));
 
-    await Promise.all(
-      users.map((user) => this.userService.updateBasicInfoOrCreate(user)),
-    );
+    await Promise.all(users.map((user) => this.userService.updateBasicInfoOrCreate(user)));
 
     this.logger.log("User data synchronized.");
   }

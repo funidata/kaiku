@@ -16,7 +16,8 @@ export class BoltRegisterService {
   ) {}
 
   /**
-   * Register all controller methods decorated with one of our Bolt event decorators.
+   * Register all controller methods decorated with one of our Bolt event
+   * decorators.
    */
   async registerAllHandlers() {
     const eventTypes = [BOLT_ACTION_KEY, BOLT_EVENT_KEY] as const;

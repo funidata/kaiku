@@ -22,9 +22,9 @@ export class DatabaseConfigService implements TypeOrmOptionsFactory {
       autoLoadEntities: true,
       synchronize: devEnvActive(config),
       /**
-       * If SSL is enabled, use sslmode=no-verify. Other SSL modes are
-       * not supported.
-       * See https://github.com/brianc/node-postgres/tree/master/packages/pg-connection-string#tcp-connections
+       * If SSL is enabled, use sslmode=no-verify. Other SSL modes are not
+       * supported. See
+       * https://github.com/brianc/node-postgres/tree/master/packages/pg-connection-string#tcp-connections
        */
       ssl: sslEnabled ? { rejectUnauthorized: false } : false,
     };
