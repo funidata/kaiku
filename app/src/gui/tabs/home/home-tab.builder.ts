@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Header, ViewBlockBuilder } from "slack-block-builder";
 import { BlockBuilder } from "../../block-builder.interface";
-import { DevToolsBuilder } from "../../dev/dev-tools.builder";
+import { DevUiBuilder } from "../../dev/dev-ui.builder";
 import { DayListBuilder } from "./day-list.builder";
 import { VisibleOfficeSelectBuilder } from "./visible-office-select.builder";
 
@@ -9,7 +9,7 @@ import { VisibleOfficeSelectBuilder } from "./visible-office-select.builder";
 export class HomeTabBuilder implements BlockBuilder<ViewBlockBuilder> {
   constructor(
     private dayListBlocks: DayListBuilder,
-    private devToolsBuilder: DevToolsBuilder,
+    private devToolsBuilder: DevUiBuilder,
     private visibleOfficeSelectBuilder: VisibleOfficeSelectBuilder,
   ) {}
 

@@ -4,7 +4,7 @@ import BoltActions from "../../bolt/enums/bolt-actions.enum";
 import { BlockBuilder } from "../block-builder.interface";
 
 @Injectable()
-export class DevToolsBuilder implements BlockBuilder<ViewBlockBuilder> {
+export class DevUiBuilder implements BlockBuilder<ViewBlockBuilder> {
   build() {
     return [
       Header({ text: ":wrench:  Developer Tools" }),
