@@ -1,6 +1,6 @@
 {
   "name": "kaiku",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Kaiku Slackbot",
   "scripts": {
     "start": "docker compose up -d && npm run logs",
