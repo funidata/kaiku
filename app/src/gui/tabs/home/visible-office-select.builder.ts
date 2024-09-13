@@ -10,6 +10,12 @@ export class VisibleOfficeSelectBuilder implements BlockBuilder<ViewBlockBuilder
 
   async build() {
     const offices = await this.officeService.findAll();
+
+    // This avoids StaticSelect throwing an error for empty options list.
+    if (offices.length === 0) {
+      return [];
+    }
+
     const Options = offices.map(({ id, name }) =>
       Option({
         text: name,
@@ -27,7 +33,6 @@ export class VisibleOfficeSelectBuilder implements BlockBuilder<ViewBlockBuilder
         })
           // TODO: Use user's selected office as initial value.
           .initialOption(Options[0])
-          // FIXME: Throws if there are no offices in DB.
           .options(Options),
       ),
     ];
