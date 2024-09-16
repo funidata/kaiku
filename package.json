@@ -10,7 +10,8 @@
     "postinstall": "cd app && npm ci",
     "format:check": "prettier --check .",
     "lint": "cd app && npm run lint",
-    "test": "npm run format:check && npm run lint",
+    "test:app": "cd app && npm test",
+    "test": "npm run format:check && npm run lint && npm run test:app",
     "version": "dev/version_sub_projects.sh $npm_package_version",
     "postversion": "git push && git push --tags"
   },
