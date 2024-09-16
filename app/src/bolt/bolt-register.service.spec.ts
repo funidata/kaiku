@@ -1,6 +1,8 @@
 import { DiscoveryService } from "@golevelup/nestjs-discovery";
 import { ModuleRef } from "@nestjs/core";
 import { Test } from "@nestjs/testing";
+import { App } from "@slack/bolt";
+import { StringIndexed } from "@slack/bolt/dist/types/helpers";
 import { createMockProvider } from "../../test/mocks/mock-provider.factory";
 import { BoltRegisterService, EventType } from "./bolt-register.service";
 import { BoltService } from "./bolt.service";
@@ -34,8 +36,7 @@ const discoveredEvents = [
 ];
 
 describe("BoltRegisterService", () => {
-  let boltRegisterService: BoltRegisterService;
-  let boltService: BoltService;
+  let bolt: App<StringIndexed>;
   let bind: jest.Mock;
 
   beforeEach(async () => {
@@ -55,27 +56,22 @@ describe("BoltRegisterService", () => {
       ],
     }).compile();
 
-    boltRegisterService = app.get<BoltRegisterService>(BoltRegisterService);
-    boltService = app.get<BoltService>(BoltService);
+    await app.get<BoltRegisterService>(BoltRegisterService).registerAllHandlers();
+    bolt = app.get<BoltService>(BoltService).getBolt();
   });
 
   it("Registers actions", async () => {
-    await boltRegisterService.registerAllHandlers();
-    const bolt = boltService.getBolt();
     expect(bolt.action).toHaveBeenCalledTimes(2);
     expect(bolt.action).toHaveBeenCalledWith("test action 1", undefined);
     expect(bolt.action).toHaveBeenCalledWith("test action 2", undefined);
   });
 
   it("Registers events", async () => {
-    await boltRegisterService.registerAllHandlers();
-    const bolt = boltService.getBolt();
     expect(bolt.event).toHaveBeenCalledTimes(1);
     expect(bolt.event).toHaveBeenCalledWith("test event 1", undefined);
   });
 
   it("Binds handler functions to correct context", async () => {
-    await boltRegisterService.registerAllHandlers();
     expect(bind).toHaveBeenCalledTimes(3);
     expect(bind).toHaveBeenCalledWith(123);
     expect(bind).toHaveBeenCalledWith(456);
