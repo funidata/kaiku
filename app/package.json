@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.10.0",
+    "@golevelup/ts-jest": "^0.5.5",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
