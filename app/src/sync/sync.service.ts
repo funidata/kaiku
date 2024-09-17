@@ -11,7 +11,7 @@ export class SyncService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    if (devEnvActive(this.configService.config)) {
+    if (devEnvActive(this.configService.getConfig())) {
       // Hot-reload in dev env would cause syncing on every file change.
       return;
     }

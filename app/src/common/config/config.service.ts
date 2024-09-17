@@ -5,12 +5,16 @@ import { KaikuAppConfiguration } from "./models/kaiku-app-configuration.model";
 
 @Injectable()
 export class ConfigService {
-  public readonly config = new KaikuAppConfiguration();
+  private readonly config = new KaikuAppConfiguration();
   private readonly logger = new Logger(ConfigService.name);
 
   constructor() {
     // Validate in constructor to exit as early as possible upon invalid configuration.
     this.validate(this.config);
+  }
+
+  getConfig(): KaikuAppConfiguration {
+    return this.config;
   }
 
   private validate(config: KaikuAppConfiguration): void {

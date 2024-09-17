@@ -11,7 +11,7 @@ export class BoltService {
   constructor(private configService: ConfigService) {}
 
   async connect() {
-    const { appToken, token, signingSecret } = this.configService.config.bolt;
+    const { appToken, token, signingSecret } = this.configService.getConfig().bolt;
     const logger = new BoltLogger();
 
     this.bolt = new App({
