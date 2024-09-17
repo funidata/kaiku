@@ -5,7 +5,7 @@ import { BoltService } from "./bolt.service";
 import { BOLT_ACTION_KEY } from "./decorators/bolt-action.decorator";
 import { BOLT_EVENT_KEY } from "./decorators/bolt-event.decorator";
 
-type EventType = typeof BOLT_ACTION_KEY | typeof BOLT_EVENT_KEY;
+export type EventType = typeof BOLT_ACTION_KEY | typeof BOLT_EVENT_KEY;
 
 @Injectable()
 export class BoltRegisterService {
