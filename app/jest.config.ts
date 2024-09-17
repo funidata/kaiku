@@ -1,15 +1,24 @@
 import type { Config } from "jest";
 
 const config: Config = {
+  testEnvironment: "node",
   moduleFileExtensions: ["js", "json", "ts"],
   rootDir: "src",
   testRegex: ".*\\.spec\\.ts$",
   transform: {
-    "^.+\\.(t|j)s$": "ts-jest",
+    "^.+\\.(ts|js)$": "ts-jest",
   },
-  collectCoverageFrom: ["**/*.(t|j)s"],
+  coverageProvider: "v8",
+  collectCoverageFrom: ["**/*.(ts|js)"],
   coverageDirectory: "../coverage",
-  testEnvironment: "node",
+  coveragePathIgnorePatterns: [
+    ".module.ts$",
+    ".model.ts$",
+    ".dto.ts$",
+    "src/database/migrations",
+    "src/database/migration-config.ts",
+    "src/main.ts",
+  ],
 };
 
 export default config;
