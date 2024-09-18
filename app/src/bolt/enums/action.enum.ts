@@ -1,4 +1,4 @@
-enum BoltActions {
+enum Action {
   SYNC_USERS = "sync_users",
   SET_OFFICE_PRESENCE = "set_office_presence",
   SET_REMOTE_PRESENCE = "set_remote_presence",
@@ -7,4 +7,4 @@ enum BoltActions {
   SET_VISIBLE_OFFICE = "set_visible_office",
 }
 
-export default BoltActions;
+export default Action;

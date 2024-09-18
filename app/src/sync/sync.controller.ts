@@ -1,14 +1,14 @@
 import { Controller } from "@nestjs/common";
 import BoltEvent from "../bolt/decorators/bolt-event.decorator";
-import BoltEvents from "../bolt/enums/bolt-events.enum";
-import { UserProfileChangedArgs } from "../bolt/types/bolt-event-types";
+import Event from "../bolt/enums/event.enum";
+import { UserProfileChangedArgs } from "../bolt/types/user-profile-changed.type";
 import { UserSyncService } from "./user-sync.service";
 
 @Controller()
 export class SyncController {
   constructor(private userSyncService: UserSyncService) {}
 
-  @BoltEvent(BoltEvents.USER_PROFILE_CHANGED)
+  @BoltEvent(Event.USER_PROFILE_CHANGED)
   async userProfileChanged({ event }: UserProfileChangedArgs) {
     await this.userSyncService.syncUsers(event.user);
   }

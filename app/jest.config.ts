@@ -15,6 +15,7 @@ const config: Config = {
     ".module.ts$",
     ".model.ts$",
     ".dto.ts$",
+    ".type.ts$",
     "src/database/migrations",
     "src/database/migration-config.ts",
     "src/main.ts",

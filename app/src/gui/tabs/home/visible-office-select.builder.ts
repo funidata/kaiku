@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Option, Section, StaticSelect, ViewBlockBuilder } from "slack-block-builder";
-import BoltActions from "../../../bolt/enums/bolt-actions.enum";
+import Action from "../../../bolt/enums/action.enum";
 import { OfficeService } from "../../../entities/office/office.service";
 import { BlockBuilder } from "../../block-builder.interface";
 
@@ -29,7 +29,7 @@ export class VisibleOfficeSelectBuilder implements BlockBuilder<ViewBlockBuilder
       }).accessory(
         StaticSelect({
           placeholder: "Valitse toimipiste",
-          actionId: BoltActions.SET_VISIBLE_OFFICE,
+          actionId: Action.SET_VISIBLE_OFFICE,
         })
           // TODO: Use user's selected office as initial value.
           .initialOption(Options[0])
