@@ -1,8 +1,8 @@
 import { SetMetadata } from "@nestjs/common";
-import BoltActions from "../enums/bolt-actions.enum";
+import Action from "../enums/action.enum";
 
 export const BOLT_ACTION_KEY = "BoltAction";
 
-const BoltAction = (actionName: BoltActions) => SetMetadata(BOLT_ACTION_KEY, actionName);
+const BoltAction = (actionName: Action) => SetMetadata(BOLT_ACTION_KEY, actionName);
 
 export default BoltAction;

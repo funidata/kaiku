@@ -1,8 +1,8 @@
 import { SetMetadata } from "@nestjs/common";
-import BoltEvents from "../enums/bolt-events.enum";
+import Event from "../enums/event.enum";
 
 export const BOLT_EVENT_KEY = "BoltEvent";
 
-const BoltEvent = (eventName: BoltEvents) => SetMetadata(BOLT_EVENT_KEY, eventName);
+const BoltEvent = (eventName: Event) => SetMetadata(BOLT_EVENT_KEY, eventName);
 
 export default BoltEvent;

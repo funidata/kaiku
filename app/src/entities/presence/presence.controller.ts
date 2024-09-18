@@ -1,8 +1,8 @@
 import { Controller, InternalServerErrorException } from "@nestjs/common";
 import dayjs from "dayjs";
 import BoltAction from "../../bolt/decorators/bolt-action.decorator";
-import BoltActions from "../../bolt/enums/bolt-actions.enum";
-import { BoltActionArgs } from "../../bolt/types/bolt-action-types";
+import Action from "../../bolt/enums/action.enum";
+import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
 import { PresenceType } from "./presence.model";
 import { PresenceService } from "./presence.service";
 
@@ -10,7 +10,7 @@ import { PresenceService } from "./presence.service";
 export class PresenceController {
   constructor(private presenceService: PresenceService) {}
 
-  @BoltAction(BoltActions.SET_OFFICE_PRESENCE)
+  @BoltAction(Action.SET_OFFICE_PRESENCE)
   async setOfficePresence({ ack, body, payload }: BoltActionArgs) {
     await ack();
     const date = dayjs(payload["value"]).toDate();
@@ -21,7 +21,7 @@ export class PresenceController {
     });
   }
 
-  @BoltAction(BoltActions.SET_REMOTE_PRESENCE)
+  @BoltAction(Action.SET_REMOTE_PRESENCE)
   async setRemotePresence({ ack, body, payload }: BoltActionArgs) {
     await ack();
     const date = dayjs(payload["value"]).toDate();
@@ -32,7 +32,7 @@ export class PresenceController {
     });
   }
 
-  @BoltAction(BoltActions.SELECT_OFFICE_FOR_DATE)
+  @BoltAction(Action.SELECT_OFFICE_FOR_DATE)
   async selectOfficeForDate({ ack, body, payload }: BoltActionArgs) {
     await ack();
     const { value, date } = JSON.parse(payload["selected_option"].value);
@@ -44,7 +44,7 @@ export class PresenceController {
   }
 
   // TODO: Should this be moved?
-  @BoltAction(BoltActions.DAY_LIST_ITEM_OVERFLOW)
+  @BoltAction(Action.DAY_LIST_ITEM_OVERFLOW)
   async dayListItemOverflow({ ack, body, payload }: BoltActionArgs) {
     await ack();
     const { type, date } = JSON.parse(payload["selected_option"].value);

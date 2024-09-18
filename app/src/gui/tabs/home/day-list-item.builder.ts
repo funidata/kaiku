@@ -9,7 +9,7 @@ import {
   StaticSelect,
   ViewBlockBuilder,
 } from "slack-block-builder";
-import BoltActions from "../../../bolt/enums/bolt-actions.enum";
+import Action from "../../../bolt/enums/action.enum";
 import { Office } from "../../../entities/office/office.model";
 import { BlockBuilder } from "../../block-builder.interface";
 
@@ -29,16 +29,16 @@ export class DayListItemBuilder implements BlockBuilder<ViewBlockBuilder> {
       Actions().elements(
         Button({
           text: "Toimistolla",
-          actionId: BoltActions.SET_OFFICE_PRESENCE,
+          actionId: Action.SET_OFFICE_PRESENCE,
           value: dateString,
         }),
         Button({
           text: "Etänä",
-          actionId: BoltActions.SET_REMOTE_PRESENCE,
+          actionId: Action.SET_REMOTE_PRESENCE,
           value: dateString,
         }),
         this.getOfficeBlocks(props),
-        OverflowMenu({ actionId: BoltActions.DAY_LIST_ITEM_OVERFLOW }).options(
+        OverflowMenu({ actionId: Action.DAY_LIST_ITEM_OVERFLOW }).options(
           Option({
             text: "Poista ilmoittautuminen",
             value: JSON.stringify({
@@ -66,7 +66,7 @@ export class DayListItemBuilder implements BlockBuilder<ViewBlockBuilder> {
 
     return StaticSelect({
       placeholder: "Valitse toimipiste",
-      actionId: BoltActions.SELECT_OFFICE_FOR_DATE,
+      actionId: Action.SELECT_OFFICE_FOR_DATE,
     })
       .initialOption(Options[0])
       .options(Options);
