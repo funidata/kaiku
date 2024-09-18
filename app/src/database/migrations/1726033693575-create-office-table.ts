@@ -8,9 +8,9 @@ export class CreateOfficeTable1726033693575 implements MigrationInterface {
         columns: [
           {
             name: "id",
-            type: "int",
+            type: "uuid",
             isPrimary: true,
-            isGenerated: true,
+            default: "uuid_generate_v4()",
           },
           {
             name: "name",

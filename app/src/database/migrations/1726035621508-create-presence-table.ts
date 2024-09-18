@@ -26,7 +26,7 @@ export class CreatePresenceTable1726035621508 implements MigrationInterface {
           },
           {
             name: "office_id",
-            type: "int",
+            type: "uuid",
             isNullable: true,
           },
         ],

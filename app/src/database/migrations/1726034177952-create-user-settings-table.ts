@@ -14,7 +14,7 @@ export class CreateUserSettingsTable1726034177952 implements MigrationInterface 
           },
           {
             name: "visible_office_id",
-            type: "int",
+            type: "uuid",
           },
         ],
         foreignKeys: [
