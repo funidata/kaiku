@@ -3,8 +3,8 @@ import { Office } from "../office/office.model";
 
 @Entity()
 export class UserSettings {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @ManyToOne(() => Office, { eager: true })
   visibleOffice: Office;
