@@ -4,5 +4,5 @@ import { Presence } from "../presence.model";
 export class UpsertPresenceDto extends OmitType(Presence, ["office"]) {}
 
 export class SetOfficeDto extends PickType(Presence, ["userId", "date"]) {
-  officeId: number;
+  officeId: string;
 }

@@ -18,7 +18,7 @@ export class Presence {
   type: PresenceType | null;
 
   @ManyToOne(() => Office, { nullable: true })
-  office: Office;
+  office: Office | null;
 }
 
 export type PresenceRepository = Repository<Presence>;

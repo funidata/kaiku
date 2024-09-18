@@ -18,5 +18,5 @@ export default new DataSource({
    * that using no wildcards resolves to different paths between the two. This
    * is arguably a little iffy but perhaps sufficient.
    */
-  migrations: ["**/migrations/*.{js,ts}"],
+  migrations: ["**/migrations/*.ts"],
 });

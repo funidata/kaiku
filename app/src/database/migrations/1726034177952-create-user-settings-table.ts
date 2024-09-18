@@ -8,13 +8,13 @@ export class CreateUserSettingsTable1726034177952 implements MigrationInterface 
         columns: [
           {
             name: "id",
-            type: "int",
+            type: "uuid",
             isPrimary: true,
-            isGenerated: true,
+            default: "uuid_generate_v4()",
           },
           {
             name: "visible_office_id",
-            type: "int",
+            type: "uuid",
           },
         ],
         foreignKeys: [

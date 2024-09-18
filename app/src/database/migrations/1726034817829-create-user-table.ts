@@ -21,7 +21,7 @@ export class CreateUserTable1726034817829 implements MigrationInterface {
           },
           {
             name: "user_settings_id",
-            type: "int",
+            type: "uuid",
           },
         ],
         foreignKeys: [
