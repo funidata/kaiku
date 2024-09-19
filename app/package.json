@@ -27,7 +27,7 @@
     "@nestjs/platform-express": "^10.4.2",
     "@nestjs/swagger": "^7.4.0",
     "@nestjs/typeorm": "^10.0.2",
-    "@slack/bolt": "^3.21.2",
+    "@slack/bolt": "^4.0.0-rc.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "dayjs": "^1.11.13",
