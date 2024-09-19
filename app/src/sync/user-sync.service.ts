@@ -27,9 +27,7 @@ export class UserSyncService {
       this.logger.log("Starting user data synchronization for all users.");
     }
 
-    const slackUsers = updateOverride
-      ? [updateOverride]
-      : (await this.boltUserService.getUsers()).members;
+    const slackUsers = updateOverride ? [updateOverride] : await this.boltUserService.getUsers();
 
     const users = slackUsers.filter(this.appUserFilter).map((user) => ({
       slackId: user.id,
