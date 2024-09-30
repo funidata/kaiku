@@ -3,6 +3,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { flatten } from "lodash";
 import { ViewBlockBuilder } from "slack-block-builder";
 import { OfficeService } from "../../../entities/office/office.service";
+import { PresenceService } from "../../../entities/presence/presence.service";
 import { BlockBuilder } from "../../block-builder.interface";
 import { DayListItemBuilder } from "./day-list-item.builder";
 
@@ -34,12 +35,16 @@ export class DayListBuilder implements BlockBuilder<ViewBlockBuilder> {
   constructor(
     private dayListItemBuilder: DayListItemBuilder,
     private officeService: OfficeService,
+    private presenceService: PresenceService,
   ) {}
 
-  async build() {
+  async build(userId: string) {
+    const presences = await this.presenceService.findPresencesByUser(userId);
     const offices = await this.officeService.findAll();
     const dates = dayRange(14);
-    const blockLists = dates.map((date) => this.dayListItemBuilder.build({ date, offices }));
+    const blockLists = dates.map((date) =>
+      this.dayListItemBuilder.build({ date, offices, presences }),
+    );
     return flatten(blockLists);
   }
 }

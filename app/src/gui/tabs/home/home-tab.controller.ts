@@ -11,7 +11,7 @@ export class HomeTabController {
 
   @BoltEvent(Event.APP_HOME_OPENED)
   async getView({ event, client, logger }: AppHomeOpenedArgs) {
-    const blocks = await this.homeTabBlocks.build();
+    const blocks = await this.homeTabBlocks.build(event.user);
     const view = HomeTab()
       .blocks(...blocks)
       .buildToObject();

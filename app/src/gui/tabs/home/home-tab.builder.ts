@@ -13,10 +13,10 @@ export class HomeTabBuilder implements BlockBuilder<ViewBlockBuilder> {
     private visibleOfficeSelectBuilder: VisibleOfficeSelectBuilder,
   ) {}
 
-  async build() {
+  async build(userId: string) {
     const devTools = this.devToolsBuilder.build();
     const officeSelect = await this.visibleOfficeSelectBuilder.build();
-    const dayList = await this.dayListBlocks.build();
+    const dayList = await this.dayListBlocks.build(userId);
     return [...devTools, Header({ text: "Ilmoittautumiset" }), ...officeSelect, ...dayList];
   }
 }

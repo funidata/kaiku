@@ -11,6 +11,10 @@ export class PresenceService {
     private dataSource: DataSource,
   ) {}
 
+  async findPresencesByUser(userId: string): Promise<Presence[]> {
+    return this.presenceRepository.find({ where: { userId } });
+  }
+
   async remove(presence: Pick<Presence, "userId" | "date">) {
     return this.presenceRepository.delete(presence);
   }
