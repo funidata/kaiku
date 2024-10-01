@@ -12,5 +12,6 @@ import { VisibleOfficeSelectBuilder } from "./visible-office-select.builder";
   imports: [DevUiModule, OfficeModule, PresenceModule],
   providers: [HomeTabBuilder, DayListBuilder, DayListItemBuilder, VisibleOfficeSelectBuilder],
   controllers: [HomeTabController],
+  exports: [HomeTabBuilder],
 })
 export class HomeTabModule {}
