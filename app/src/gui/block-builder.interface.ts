@@ -10,5 +10,5 @@ import { Appendable } from "slack-block-builder/dist/internal";
  * used throughout the block tree.
  */
 export interface BlockBuilder<T extends BlockBuilderType> {
-  build(...args: unknown[]): Appendable<T> | Promise<Appendable<T>>;
+  buildBlocks(...args: unknown[]): Appendable<T> | Promise<Appendable<T>>;
 }

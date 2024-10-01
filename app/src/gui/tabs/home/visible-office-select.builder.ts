@@ -8,7 +8,7 @@ import { BlockBuilder } from "../../block-builder.interface";
 export class VisibleOfficeSelectBuilder implements BlockBuilder<ViewBlockBuilder> {
   constructor(private officeService: OfficeService) {}
 
-  async build() {
+  async buildBlocks() {
     const offices = await this.officeService.findAll();
 
     // This avoids StaticSelect throwing an error for empty options list.

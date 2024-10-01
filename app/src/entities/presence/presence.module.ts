@@ -9,6 +9,6 @@ import { PresenceService } from "./presence.service";
   imports: [TypeOrmModule.forFeature([Presence]), OfficeModule],
   providers: [PresenceService],
   controllers: [PresenceController],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, PresenceService],
 })
 export class PresenceModule {}
