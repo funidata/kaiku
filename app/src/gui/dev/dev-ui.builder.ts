@@ -5,7 +5,7 @@ import { BlockBuilder } from "../block-builder.interface";
 
 @Injectable()
 export class DevUiBuilder implements BlockBuilder<ViewBlockBuilder> {
-  build() {
+  buildBlocks() {
     return [
       Header({ text: ":wrench:  Developer Tools" }),
       Actions().elements(

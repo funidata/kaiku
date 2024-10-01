@@ -38,12 +38,12 @@ export class DayListBuilder implements BlockBuilder<ViewBlockBuilder> {
     private presenceService: PresenceService,
   ) {}
 
-  async build(userId: string) {
+  async buildBlocks(userId: string) {
     const presences = await this.presenceService.findPresencesByUser(userId);
     const offices = await this.officeService.findAll();
     const dates = dayRange(14);
     const blockLists = dates.map((date) =>
-      this.dayListItemBuilder.build({ date, offices, presences }),
+      this.dayListItemBuilder.buildBlocks({ date, offices, presences }),
     );
     return flatten(blockLists);
   }

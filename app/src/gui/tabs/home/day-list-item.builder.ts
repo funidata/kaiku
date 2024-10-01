@@ -22,7 +22,7 @@ type DayListItemProps = {
 
 @Injectable()
 export class DayListItemBuilder implements BlockBuilder<ViewBlockBuilder> {
-  build(props: DayListItemProps) {
+  buildBlocks(props: DayListItemProps) {
     const { date } = props;
     const dateString = date.toISOString();
 
@@ -37,6 +37,7 @@ export class DayListItemBuilder implements BlockBuilder<ViewBlockBuilder> {
           text: "Toimistolla",
           actionId: Action.SET_OFFICE_PRESENCE,
           value: dateString,
+          // FIXME: Nappula ei päivity automaattisesti klikkauksen jälkeen!
         }).primary(currentPresence?.type === "office"),
         Button({
           text: "Etänä",
