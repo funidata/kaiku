@@ -1,5 +1,5 @@
 import { Global, Module } from "@nestjs/common";
-import { HomeTabModule } from "./tabs/home/home-tab.module";
+import { HomeTabModule } from "./home-tab/home-tab.module";
 
 /**
  * Global module avoids having to use forward references to resolve circular

@@ -1,11 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import dayjs, { Dayjs } from "dayjs";
 import { flatten } from "lodash";
-import { ViewBlockBuilder } from "slack-block-builder";
 import { OfficeService } from "../../../entities/office/office.service";
 import { PresenceService } from "../../../entities/presence/presence.service";
-import { BlockBuilder } from "../../block-builder.interface";
-import { DayListItemBuilder } from "./day-list-item.builder";
+import { DayListItem } from "./day-list-item.builder";
 
 /**
  * Get range of days from today (inclusive) for the next `len` working days
@@ -31,9 +29,9 @@ const dayRange = (len: number, days: Dayjs[] = [], i = 0): Dayjs[] => {
 };
 
 @Injectable()
-export class DayListBuilder implements BlockBuilder<ViewBlockBuilder> {
+export class DayList {
   constructor(
-    private dayListItemBuilder: DayListItemBuilder,
+    private dayListItemBuilder: DayListItem,
     private officeService: OfficeService,
     private presenceService: PresenceService,
   ) {}
