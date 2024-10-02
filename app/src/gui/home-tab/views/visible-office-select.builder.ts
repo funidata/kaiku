@@ -1,11 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { Option, Section, StaticSelect, ViewBlockBuilder } from "slack-block-builder";
+import { Option, Section, StaticSelect } from "slack-block-builder";
 import Action from "../../../bolt/enums/action.enum";
 import { OfficeService } from "../../../entities/office/office.service";
-import { BlockBuilder } from "../../block-builder.interface";
 
 @Injectable()
-export class VisibleOfficeSelectBuilder implements BlockBuilder<ViewBlockBuilder> {
+export class VisibleOfficeSelect {
   constructor(private officeService: OfficeService) {}
 
   async buildBlocks() {

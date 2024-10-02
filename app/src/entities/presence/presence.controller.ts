@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import BoltAction from "../../bolt/decorators/bolt-action.decorator";
 import Action from "../../bolt/enums/action.enum";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
-import { HomeTabBuilder } from "../../gui/tabs/home/home-tab.builder";
+import { HomeTabBuilder } from "../../gui/home-tab/home-tab.builder";
 import { PresenceType } from "./presence.model";
 import { PresenceService } from "./presence.service";
 
