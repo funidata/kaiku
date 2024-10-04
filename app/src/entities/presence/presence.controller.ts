@@ -24,7 +24,7 @@ export class PresenceController {
       date,
     });
 
-    await this.homeTab.update(body, client);
+    await this.homeTab.update(body, client, []);
   }
 
   @BoltAction(Action.SET_REMOTE_PRESENCE)
@@ -37,7 +37,7 @@ export class PresenceController {
       date,
     });
 
-    await this.homeTab.update(body, client);
+    await this.homeTab.update(body, client, []);
   }
 
   @BoltAction(Action.SELECT_OFFICE_FOR_DATE)
@@ -50,7 +50,7 @@ export class PresenceController {
       officeId: value,
     });
 
-    await this.homeTab.update(body, client);
+    await this.homeTab.update(body, client, []);
   }
 
   // TODO: Should this be moved?
@@ -68,6 +68,6 @@ export class PresenceController {
       date: dayjs(date).toDate(),
     });
 
-    await this.homeTab.update(body, client);
+    await this.homeTab.update(body, client, []);
   }
 }

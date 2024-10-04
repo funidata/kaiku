@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { BlockAction } from "@slack/bolt";
 import { Actions, Button, Header, HomeTab, ViewBlockBuilder } from "slack-block-builder";
 import { Appendable, SlackHomeTabDto } from "slack-block-builder/dist/internal";
+import Action from "../../bolt/enums/action.enum";
 import { AppHomeOpenedArgs } from "../../bolt/types/app-home-opened.type";
 import { ViewsPublishResponse } from "../../bolt/types/views-publish-response.type";
 import { WebClient } from "../../bolt/types/web-client.type";
@@ -25,7 +26,7 @@ export class HomeTabBuilder {
       ...devTools,
       Actions().elements([
         Button({ text: "Ilmoittautuminen" }),
-        Button({ text: "Läsnäolijat" }),
+        Button({ text: "Läsnäolijat", actionId: Action.OPEN_PRESENCE_VIEW }),
         Button({ text: "Asetukset" }),
       ]),
       Header({ text: "Ilmoittautuminen" }),
@@ -34,27 +35,40 @@ export class HomeTabBuilder {
     ];
   }
 
+  // TODO: Remove
   async buildView(userId: string): Promise<SlackHomeTabDto> {
     return HomeTab()
       .blocks(...(await this.buildBlocks(userId)))
       .buildToObject();
   }
 
-  async publish({ client, event }: AppHomeOpenedArgs): Promise<ViewsPublishResponse> {
-    const blocks = await this.buildBlocks(event.user);
+  async build(blocks: Appendable<ViewBlockBuilder>) {
+    return (
+      HomeTab()
+        // TODO: Needs "global" items.
+        .blocks(...blocks)
+        .buildToObject()
+    );
+  }
 
+  async publish(
+    { client, event }: AppHomeOpenedArgs,
+    view: SlackHomeTabDto,
+  ): Promise<ViewsPublishResponse> {
     return client.views.publish({
       user_id: event.user,
-      view: HomeTab()
-        .blocks(...blocks)
-        .buildToObject(),
+      view,
     });
   }
 
-  async update(action: BlockAction, client: WebClient): Promise<ViewsPublishResponse> {
+  async update(
+    action: BlockAction,
+    client: WebClient,
+    content: Appendable<ViewBlockBuilder>,
+  ): Promise<ViewsPublishResponse> {
     return client.views.update({
       view_id: action.view.id,
-      view: await this.buildView(action.user.id),
+      view: await this.build(content),
     });
   }
 }
