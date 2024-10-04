@@ -24,6 +24,7 @@ export class PresenceController {
       date,
     });
 
+    // FIXME: Updates broke in refactoring.
     await this.homeTab.update(args, []);
   }
 

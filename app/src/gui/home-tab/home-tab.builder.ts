@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { Header, HomeTab, ViewBlockBuilder } from "slack-block-builder";
-import { Appendable, SlackHomeTabDto } from "slack-block-builder/dist/internal";
+import { Appendable } from "slack-block-builder/dist/internal";
 import { AppHomeOpenedArgs } from "../../bolt/types/app-home-opened.type";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
 import { ViewsPublishResponse } from "../../bolt/types/views-publish-response.type";
 import { HomeTabControls } from "./home-tab-controls";
-import { DayList } from "./views/day-list.builder";
-import { VisibleOfficeSelect } from "./views/visible-office-select.builder";
+import { DayList } from "./views/registration/day-list.builder";
+import { VisibleOfficeSelect } from "./views/registration/visible-office-select.builder";
 
 @Injectable()
 export class HomeTabBuilder {
@@ -24,13 +24,6 @@ export class HomeTabBuilder {
     return [...controls, Header({ text: "Ilmoittautuminen" }), ...officeSelect, ...dayList];
   }
 
-  // TODO: Remove
-  async buildView(userId: string): Promise<SlackHomeTabDto> {
-    return HomeTab()
-      .blocks(...(await this.buildBlocks(userId)))
-      .buildToObject();
-  }
-
   async build(blocks: Appendable<ViewBlockBuilder>) {
     return (
       HomeTab()
@@ -42,11 +35,11 @@ export class HomeTabBuilder {
 
   async publish(
     { client, event }: AppHomeOpenedArgs,
-    view: SlackHomeTabDto,
+    content: Appendable<ViewBlockBuilder>,
   ): Promise<ViewsPublishResponse> {
     return client.views.publish({
       user_id: event.user,
-      view,
+      view: await this.build(content),
     });
   }
 

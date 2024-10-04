@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import dayjs, { Dayjs } from "dayjs";
 import { flatten } from "lodash";
-import { OfficeService } from "../../../entities/office/office.service";
-import { PresenceService } from "../../../entities/presence/presence.service";
+import { OfficeService } from "../../../../entities/office/office.service";
+import { PresenceService } from "../../../../entities/presence/presence.service";
 import { DayListItem } from "./day-list-item.builder";
 
 /**

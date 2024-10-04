@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Option, Section, StaticSelect } from "slack-block-builder";
-import Action from "../../../bolt/enums/action.enum";
-import { OfficeService } from "../../../entities/office/office.service";
+import Action from "../../../../bolt/enums/action.enum";
+import { OfficeService } from "../../../../entities/office/office.service";
 
 @Injectable()
 export class VisibleOfficeSelect {
