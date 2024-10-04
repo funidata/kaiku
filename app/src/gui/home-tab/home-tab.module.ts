@@ -2,16 +2,15 @@ import { Module } from "@nestjs/common";
 import { OfficeModule } from "../../entities/office/office.module";
 import { PresenceModule } from "../../entities/presence/presence.module";
 import { DevUiModule } from "../dev/dev-ui.module";
-import { HomeTabBuilder } from "./home-tab.builder";
+import { HomeTabControls } from "./home-tab-controls";
 import { HomeTabController } from "./home-tab.controller";
-import { DayListItem } from "./views/day-list-item.builder";
-import { DayList } from "./views/day-list.builder";
-import { VisibleOfficeSelect } from "./views/visible-office-select.builder";
+import { HomeTabService } from "./home-tab.service";
+import { RegistrationViewModule } from "./views/registration/registration-view.module";
 
 @Module({
-  imports: [DevUiModule, OfficeModule, PresenceModule],
-  providers: [HomeTabBuilder, DayList, DayListItem, VisibleOfficeSelect],
+  imports: [DevUiModule, OfficeModule, PresenceModule, RegistrationViewModule],
+  providers: [HomeTabService, HomeTabControls],
   controllers: [HomeTabController],
-  exports: [HomeTabBuilder],
+  exports: [HomeTabService, RegistrationViewModule],
 })
 export class HomeTabModule {}

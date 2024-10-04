@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import dayjs, { Dayjs } from "dayjs";
 import { flatten } from "lodash";
-import { OfficeService } from "../../../entities/office/office.service";
-import { PresenceService } from "../../../entities/presence/presence.service";
-import { DayListItem } from "./day-list-item.builder";
+import { OfficeService } from "../../../../entities/office/office.service";
+import { PresenceService } from "../../../../entities/presence/presence.service";
+import { DayListItem } from "./day-list-item";
 
 /**
  * Get range of days from today (inclusive) for the next `len` working days
@@ -36,12 +36,12 @@ export class DayList {
     private presenceService: PresenceService,
   ) {}
 
-  async buildBlocks(userId: string) {
+  async build(userId: string) {
     const presences = await this.presenceService.findPresencesByUser(userId);
     const offices = await this.officeService.findAll();
     const dates = dayRange(14);
     const blockLists = dates.map((date) =>
-      this.dayListItemBuilder.buildBlocks({ date, offices, presences }),
+      this.dayListItemBuilder.build({ date, offices, presences }),
     );
     return flatten(blockLists);
   }

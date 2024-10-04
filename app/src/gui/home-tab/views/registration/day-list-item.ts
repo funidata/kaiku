@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import dayjs, { Dayjs } from "dayjs";
 import { Actions, Button, Header, Option, OverflowMenu, StaticSelect } from "slack-block-builder";
-import Action from "../../../bolt/enums/action.enum";
-import { Office } from "../../../entities/office/office.model";
-import { Presence } from "../../../entities/presence/presence.model";
+import Action from "../../../../bolt/enums/action.enum";
+import { Office } from "../../../../entities/office/office.model";
+import { Presence } from "../../../../entities/presence/presence.model";
 
 type DayListItemProps = {
   date: Dayjs;
@@ -13,7 +13,7 @@ type DayListItemProps = {
 
 @Injectable()
 export class DayListItem {
-  buildBlocks(props: DayListItemProps) {
+  build(props: DayListItemProps) {
     const { date } = props;
     const dateString = date.toISOString();
 
