@@ -1,10 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { BlockAction } from "@slack/bolt";
 import { Header, HomeTab, ViewBlockBuilder } from "slack-block-builder";
 import { Appendable, SlackHomeTabDto } from "slack-block-builder/dist/internal";
 import { AppHomeOpenedArgs } from "../../bolt/types/app-home-opened.type";
+import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
 import { ViewsPublishResponse } from "../../bolt/types/views-publish-response.type";
-import { WebClient } from "../../bolt/types/web-client.type";
 import { HomeTabControls } from "./home-tab-controls";
 import { DayList } from "./views/day-list.builder";
 import { VisibleOfficeSelect } from "./views/visible-office-select.builder";
@@ -52,12 +51,11 @@ export class HomeTabBuilder {
   }
 
   async update(
-    action: BlockAction,
-    client: WebClient,
+    { body, client }: BoltActionArgs,
     content: Appendable<ViewBlockBuilder>,
   ): Promise<ViewsPublishResponse> {
     return client.views.update({
-      view_id: action.view.id,
+      view_id: body.view.id,
       view: await this.build(content),
     });
   }

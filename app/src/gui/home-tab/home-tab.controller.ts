@@ -22,9 +22,9 @@ export class HomeTabController {
   }
 
   @BoltAction(Action.OPEN_PRESENCE_VIEW)
-  async openPresenceView({ ack, ...args }: BoltActionArgs) {
-    await ack();
+  async openPresenceView(args: BoltActionArgs) {
+    await args.ack();
     const content = await this.presenceView.build();
-    this.homeTabBuilder.update(args.body, args.client, content);
+    this.homeTabBuilder.update(args, content);
   }
 }
