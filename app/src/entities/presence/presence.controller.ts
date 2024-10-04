@@ -4,6 +4,7 @@ import BoltAction from "../../bolt/decorators/bolt-action.decorator";
 import Action from "../../bolt/enums/action.enum";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
 import { HomeTabBuilder } from "../../gui/home-tab/home-tab.builder";
+import { RegistrationView } from "../../gui/home-tab/views/registration/registration-view";
 import { PresenceType } from "./presence.model";
 import { PresenceService } from "./presence.service";
 
@@ -12,6 +13,7 @@ export class PresenceController {
   constructor(
     private presenceService: PresenceService,
     private homeTab: HomeTabBuilder,
+    private registrationView: RegistrationView,
   ) {}
 
   @BoltAction(Action.SET_OFFICE_PRESENCE)
@@ -24,8 +26,7 @@ export class PresenceController {
       date,
     });
 
-    // FIXME: Updates broke in refactoring.
-    await this.homeTab.update(args, []);
+    await this.updateViewAfterAction(args);
   }
 
   @BoltAction(Action.SET_REMOTE_PRESENCE)
@@ -38,7 +39,7 @@ export class PresenceController {
       date,
     });
 
-    await this.homeTab.update(args, []);
+    await this.updateViewAfterAction(args);
   }
 
   @BoltAction(Action.SELECT_OFFICE_FOR_DATE)
@@ -51,7 +52,7 @@ export class PresenceController {
       officeId: value,
     });
 
-    await this.homeTab.update(args, []);
+    await this.updateViewAfterAction(args);
   }
 
   // TODO: Should this be moved?
@@ -69,6 +70,11 @@ export class PresenceController {
       date: dayjs(date).toDate(),
     });
 
-    await this.homeTab.update(args, []);
+    await this.updateViewAfterAction(args);
+  }
+
+  private async updateViewAfterAction(args: BoltActionArgs) {
+    const content = await this.registrationView.build(args.body.user.id);
+    await this.homeTab.update(args, content);
   }
 }

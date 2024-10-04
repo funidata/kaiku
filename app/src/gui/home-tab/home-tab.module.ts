@@ -21,6 +21,6 @@ import { VisibleOfficeSelect } from "./views/registration/visible-office-select.
     RegistrationView,
   ],
   controllers: [HomeTabController],
-  exports: [HomeTabBuilder],
+  exports: [HomeTabBuilder, RegistrationView],
 })
 export class HomeTabModule {}
