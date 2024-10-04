@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 import BoltAction from "../../bolt/decorators/bolt-action.decorator";
 import Action from "../../bolt/enums/action.enum";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
-import { HomeTabBuilder } from "../../gui/home-tab/home-tab.builder";
-import { RegistrationView } from "../../gui/home-tab/views/registration/registration-view";
+import { HomeTabService } from "../../gui/home-tab/home-tab.service";
+import { RegistrationView } from "../../gui/home-tab/views/registration/registration.view";
 import { PresenceType } from "./presence.model";
 import { PresenceService } from "./presence.service";
 
@@ -12,7 +12,7 @@ import { PresenceService } from "./presence.service";
 export class PresenceController {
   constructor(
     private presenceService: PresenceService,
-    private homeTab: HomeTabBuilder,
+    private homeTab: HomeTabService,
     private registrationView: RegistrationView,
   ) {}
 

@@ -13,7 +13,7 @@ type DayListItemProps = {
 
 @Injectable()
 export class DayListItem {
-  buildBlocks(props: DayListItemProps) {
+  build(props: DayListItemProps) {
     const { date } = props;
     const dateString = date.toISOString();
 

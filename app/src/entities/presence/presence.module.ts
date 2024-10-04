@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { PresenceView } from "../../gui/home-tab/views/presence-view";
+import { PresenceView } from "../../gui/home-tab/views/presence.view";
 import { OfficeModule } from "../office/office.module";
 import { PresenceController } from "./presence.controller";
 import { Presence } from "./presence.model";

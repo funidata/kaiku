@@ -7,7 +7,7 @@ import { OfficeService } from "../../../../entities/office/office.service";
 export class VisibleOfficeSelect {
   constructor(private officeService: OfficeService) {}
 
-  async buildBlocks() {
+  async build() {
     const offices = await this.officeService.findAll();
 
     // This avoids StaticSelect throwing an error for empty options list.

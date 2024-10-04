@@ -7,17 +7,14 @@ import { ViewsPublishResponse } from "../../bolt/types/views-publish-response.ty
 import { HomeTabControls } from "./home-tab-controls";
 
 @Injectable()
-export class HomeTabBuilder {
+export class HomeTabService {
   constructor(private homeTabControls: HomeTabControls) {}
 
-  async build(content: Appendable<ViewBlockBuilder>) {
-    const controls = this.homeTabControls.build();
-
-    return HomeTab()
-      .blocks(...controls, ...content)
-      .buildToObject();
-  }
-
+  /**
+   * Publish home tab content view.
+   *
+   * Use this after an event, e.g., opening the app home tab.
+   */
   async publish(
     { client, event }: AppHomeOpenedArgs,
     content: Appendable<ViewBlockBuilder>,
@@ -28,6 +25,11 @@ export class HomeTabBuilder {
     });
   }
 
+  /**
+   * Update home tab content.
+   *
+   * Use this after an action, e.g., clicking a button in the home tab.
+   */
   async update(
     { body, client }: BoltActionArgs,
     content: Appendable<ViewBlockBuilder>,
@@ -36,5 +38,16 @@ export class HomeTabBuilder {
       view_id: body.view.id,
       view: await this.build(content),
     });
+  }
+
+  /**
+   * Build home tab layout with given content in it.
+   */
+  private async build(content: Appendable<ViewBlockBuilder>) {
+    const controls = this.homeTabControls.build();
+
+    return HomeTab()
+      .blocks(...controls, ...content)
+      .buildToObject();
   }
 }
