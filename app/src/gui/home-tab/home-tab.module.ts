@@ -5,22 +5,12 @@ import { DevUiModule } from "../dev/dev-ui.module";
 import { HomeTabControls } from "./home-tab-controls";
 import { HomeTabController } from "./home-tab.controller";
 import { HomeTabService } from "./home-tab.service";
-import { DayList } from "./views/registration/day-list";
-import { DayListItem } from "./views/registration/day-list-item";
-import { RegistrationView } from "./views/registration/registration.view";
-import { VisibleOfficeSelect } from "./views/registration/visible-office-select";
+import { RegistrationViewModule } from "./views/registration/registration-view.module";
 
 @Module({
-  imports: [DevUiModule, OfficeModule, PresenceModule],
-  providers: [
-    HomeTabService,
-    DayList,
-    DayListItem,
-    VisibleOfficeSelect,
-    HomeTabControls,
-    RegistrationView,
-  ],
+  imports: [DevUiModule, OfficeModule, PresenceModule, RegistrationViewModule],
+  providers: [HomeTabService, HomeTabControls],
   controllers: [HomeTabController],
-  exports: [HomeTabService, RegistrationView],
+  exports: [HomeTabService, RegistrationViewModule],
 })
 export class HomeTabModule {}
