@@ -2,14 +2,21 @@ import { Injectable } from "@nestjs/common";
 import { Actions, Button, ViewBlockBuilder } from "slack-block-builder";
 import { Appendable } from "slack-block-builder/dist/internal";
 import Action from "../../bolt/enums/action.enum";
+import { ConfigService } from "../../common/config/config.service";
 import { DevUiBuilder } from "../dev/dev-ui.builder";
 
 @Injectable()
 export class HomeTabControls {
-  constructor(private devToolsBuilder: DevUiBuilder) {}
+  constructor(
+    private devToolsBuilder: DevUiBuilder,
+    private configService: ConfigService,
+  ) {}
 
   build(): Appendable<ViewBlockBuilder> {
-    const devTools = this.devToolsBuilder.buildBlocks();
+    const devTools = this.configService.getConfig().hideDevTools
+      ? []
+      : this.devToolsBuilder.buildBlocks();
+
     return [
       ...devTools,
       Actions().elements([

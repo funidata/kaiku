@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { ConfigModule } from "../../common/config/config.module";
 import { OfficeModule } from "../../entities/office/office.module";
 import { PresenceModule } from "../../entities/presence/presence.module";
 import { DevUiModule } from "../dev/dev-ui.module";
@@ -8,7 +9,7 @@ import { HomeTabService } from "./home-tab.service";
 import { RegistrationViewModule } from "./views/registration/registration-view.module";
 
 @Module({
-  imports: [DevUiModule, OfficeModule, PresenceModule, RegistrationViewModule],
+  imports: [DevUiModule, OfficeModule, PresenceModule, RegistrationViewModule, ConfigModule],
   providers: [HomeTabService, HomeTabControls],
   controllers: [HomeTabController],
   exports: [HomeTabService, RegistrationViewModule],
