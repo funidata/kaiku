@@ -3,11 +3,11 @@ import { Inject, Injectable, Logger } from "@nestjs/common";
 import { Cache } from "cache-manager";
 
 type ViewOptions = {
-  selectedView: string;
+  selectedView: "registration" | "presence" | "settings";
 };
 
 const defaultOptions: ViewOptions = {
-  selectedView: "home",
+  selectedView: "registration",
 };
 
 /**
