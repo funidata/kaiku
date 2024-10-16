@@ -12,6 +12,12 @@ import { PresenceView } from "./views/presence.view";
 import { RegistrationView } from "./views/registration/registration.view";
 import { SettingsView } from "./views/settings.view";
 
+type ViewProps = {
+  actionArgs: BoltActionArgs;
+  name: "presence" | "registration" | "settings";
+  contentFactory: () => Promise<Appendable<ViewBlockBuilder>>;
+};
+
 @Controller()
 export class HomeTabController {
   constructor(
@@ -29,6 +35,8 @@ export class HomeTabController {
 
     if (selectedView === "presence") {
       content = await this.presenceView.build();
+    } else if (selectedView === "settings") {
+      content = await this.settingsView.build();
     } else {
       content = await this.registrationView.build(args.event.user);
     }
@@ -37,26 +45,42 @@ export class HomeTabController {
   }
 
   @BoltAction(Action.OPEN_PRESENCE_VIEW)
-  async openPresenceView(args: BoltActionArgs) {
-    await args.ack();
-    await this.viewCache.set(args.context.userId, { selectedView: "presence" });
-    const content = await this.presenceView.build();
-    this.homeTabBuilder.update(args, content);
+  async openPresenceView(actionArgs: BoltActionArgs) {
+    await this.openView({
+      actionArgs,
+      contentFactory: async () => this.presenceView.build(),
+      name: "presence",
+    });
   }
 
   @BoltAction(Action.OPEN_REGISTRATION_VIEW)
-  async openRegistrationView(args: BoltActionArgs) {
-    await args.ack();
-    await this.viewCache.set(args.context.userId, { selectedView: "registration" });
-    const content = await this.registrationView.build(args.context.userId);
-    this.homeTabBuilder.update(args, content);
+  async openRegistrationView(actionArgs: BoltActionArgs) {
+    await this.openView({
+      actionArgs,
+      contentFactory: async () => this.registrationView.build(actionArgs.context.userId),
+      name: "registration",
+    });
   }
 
   @BoltAction(Action.OPEN_SETTINGS_VIEW)
-  async openSettingsView(args: BoltActionArgs) {
-    await args.ack();
-    await this.viewCache.set(args.context.userId, { selectedView: "settings" });
-    const content = await this.settingsView.build();
-    this.homeTabBuilder.update(args, content);
+  async openSettingsView(actionArgs: BoltActionArgs) {
+    await this.openView({
+      actionArgs,
+      contentFactory: async () => this.settingsView.build(),
+      name: "settings",
+    });
+  }
+
+  /**
+   * Abstract helper to show home tab views with less boilerplate.
+   *
+   * According to Bolt docs, `ack()` should be called ASAP. To comply with this,
+   * we take a content factory instead of prebuild content as an argument.
+   */
+  private async openView({ actionArgs, contentFactory, name }: ViewProps) {
+    await actionArgs.ack();
+    await this.viewCache.set(actionArgs.context.userId, { selectedView: name });
+    const content = await contentFactory();
+    this.homeTabBuilder.update(actionArgs, content);
   }
 }
