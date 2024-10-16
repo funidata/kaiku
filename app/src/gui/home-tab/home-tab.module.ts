@@ -9,6 +9,7 @@ import { HomeTabController } from "./home-tab.controller";
 import { HomeTabService } from "./home-tab.service";
 import { ViewCache } from "./view.cache";
 import { RegistrationViewModule } from "./views/registration/registration-view.module";
+import { SettingsView } from "./views/settings.view";
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { RegistrationViewModule } from "./views/registration/registration-view.m
       ttl: 0,
     }),
   ],
-  providers: [HomeTabService, HomeTabControls, ViewCache],
+  providers: [HomeTabService, HomeTabControls, ViewCache, SettingsView],
   controllers: [HomeTabController],
   exports: [HomeTabService, RegistrationViewModule],
 })

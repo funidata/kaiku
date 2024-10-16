@@ -10,6 +10,7 @@ import { HomeTabService } from "./home-tab.service";
 import { ViewCache } from "./view.cache";
 import { PresenceView } from "./views/presence.view";
 import { RegistrationView } from "./views/registration/registration.view";
+import { SettingsView } from "./views/settings.view";
 
 @Controller()
 export class HomeTabController {
@@ -17,6 +18,7 @@ export class HomeTabController {
     private homeTabBuilder: HomeTabService,
     private presenceView: PresenceView,
     private registrationView: RegistrationView,
+    private settingsView: SettingsView,
     private viewCache: ViewCache,
   ) {}
 
@@ -47,6 +49,14 @@ export class HomeTabController {
     await args.ack();
     await this.viewCache.set(args.context.userId, { selectedView: "registration" });
     const content = await this.registrationView.build(args.context.userId);
+    this.homeTabBuilder.update(args, content);
+  }
+
+  @BoltAction(Action.OPEN_SETTINGS_VIEW)
+  async openSettingsView(args: BoltActionArgs) {
+    await args.ack();
+    await this.viewCache.set(args.context.userId, { selectedView: "settings" });
+    const content = await this.settingsView.build();
     this.homeTabBuilder.update(args, content);
   }
 }

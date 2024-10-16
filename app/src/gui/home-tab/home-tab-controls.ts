@@ -22,7 +22,7 @@ export class HomeTabControls {
       Actions().elements([
         Button({ text: "Ilmoittautuminen", actionId: Action.OPEN_REGISTRATION_VIEW }),
         Button({ text: "Läsnäolijat", actionId: Action.OPEN_PRESENCE_VIEW }),
-        Button({ text: "Asetukset" }),
+        Button({ text: "Asetukset", actionId: Action.OPEN_SETTINGS_VIEW }),
       ]),
     ];
   }
