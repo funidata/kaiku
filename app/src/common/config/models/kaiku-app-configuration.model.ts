@@ -1,4 +1,4 @@
-import { IsIn, ValidateNested } from "class-validator";
+import { IsBoolean, IsIn, ValidateNested } from "class-validator";
 import { BoltConfiguration } from "./bolt-configuration.model";
 import { DatabaseConfiguration } from "./database-configuration.model";
 
@@ -15,4 +15,7 @@ export class KaikuAppConfiguration {
 
   @ValidateNested()
   bolt = new BoltConfiguration();
+
+  @IsBoolean()
+  hideDevTools = process.env.HIDE_DEV_TOOLS === "true";
 }

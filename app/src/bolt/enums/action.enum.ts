@@ -6,6 +6,8 @@ enum Action {
   DAY_LIST_ITEM_OVERFLOW = "day_list_item_overflow",
   SET_VISIBLE_OFFICE = "set_visible_office",
   OPEN_PRESENCE_VIEW = "open_presence_view",
+  OPEN_REGISTRATION_VIEW = "open_registration_view",
+  OPEN_SETTINGS_VIEW = "open_settings_view",
 }
 
 export default Action;

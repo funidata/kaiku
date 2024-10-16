@@ -2,10 +2,12 @@ import { Test } from "@nestjs/testing";
 import { omit } from "lodash";
 import { createMockProvider } from "../../test/mocks/mock-provider.factory";
 import { ConfigService } from "../common/config/config.service";
+import { KaikuAppConfiguration } from "../common/config/models/kaiku-app-configuration.model";
 import { DatabaseConfigService } from "./database-config.service";
 
-const mockConfig = {
+const mockConfig: KaikuAppConfiguration = {
   nodeEnv: "production",
+  hideDevTools: true,
   bolt: {
     token: "",
     appToken: "",

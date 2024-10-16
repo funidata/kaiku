@@ -21,7 +21,7 @@ export class HomeTabService {
   ): Promise<ViewsPublishResponse> {
     return client.views.publish({
       user_id: event.user,
-      view: await this.build(content),
+      view: await this.build(content, event.user),
     });
   }
 
@@ -36,15 +36,15 @@ export class HomeTabService {
   ): Promise<ViewsPublishResponse> {
     return client.views.update({
       view_id: body.view.id,
-      view: await this.build(content),
+      view: await this.build(content, body.user.id),
     });
   }
 
   /**
    * Build home tab layout with given content in it.
    */
-  private async build(content: Appendable<ViewBlockBuilder>) {
-    const controls = this.homeTabControls.build();
+  private async build(content: Appendable<ViewBlockBuilder>, userId: string) {
+    const controls = await this.homeTabControls.build(userId);
 
     return HomeTab()
       .blocks(...controls, ...content)
