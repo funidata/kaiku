@@ -6,6 +6,7 @@ import Event from "../../bolt/enums/event.enum";
 import { AppHomeOpenedArgs } from "../../bolt/types/app-home-opened.type";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
 import { HomeTabService } from "./home-tab.service";
+import { ViewCache } from "./view.cache";
 import { PresenceView } from "./views/presence.view";
 import { RegistrationView } from "./views/registration/registration.view";
 
@@ -15,6 +16,7 @@ export class HomeTabController {
     private homeTabBuilder: HomeTabService,
     private presenceView: PresenceView,
     private registrationView: RegistrationView,
+    private viewCache: ViewCache,
   ) {}
 
   @BoltEvent(Event.APP_HOME_OPENED)
