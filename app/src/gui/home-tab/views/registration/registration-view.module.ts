@@ -4,11 +4,10 @@ import { PresenceModule } from "../../../../entities/presence/presence.module";
 import { DayList } from "./day-list";
 import { DayListItem } from "./day-list-item";
 import { RegistrationView } from "./registration.view";
-import { VisibleOfficeSelect } from "./visible-office-select";
 
 @Module({
   imports: [OfficeModule, PresenceModule],
-  providers: [DayList, DayListItem, VisibleOfficeSelect, RegistrationView],
+  providers: [DayList, DayListItem, RegistrationView],
   exports: [RegistrationView],
 })
 export class RegistrationViewModule {}
