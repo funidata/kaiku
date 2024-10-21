@@ -6,6 +6,7 @@ import Action from "../../bolt/enums/action.enum";
 import Event from "../../bolt/enums/event.enum";
 import { AppHomeOpenedArgs } from "../../bolt/types/app-home-opened.type";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
+import { UserSettingsService } from "../../entities/user-settings/user-settings.service";
 import { HomeTabService } from "./home-tab.service";
 import { ViewCache } from "./view.cache";
 import { PresenceView } from "./views/presence/presence.view";
@@ -26,6 +27,7 @@ export class HomeTabController {
     private registrationView: RegistrationView,
     private settingsView: SettingsView,
     private viewCache: ViewCache,
+    private userSettingsService: UserSettingsService,
   ) {}
 
   @BoltEvent(Event.APP_HOME_OPENED)
@@ -80,6 +82,7 @@ export class HomeTabController {
   private async openView({ actionArgs, contentFactory, name }: ViewProps) {
     await actionArgs.ack();
     await this.viewCache.set(actionArgs.context.userId, { selectedView: name });
+    await this.userSettingsService.update(actionArgs.context.userId, { selectedView: name });
     const content = await contentFactory();
     this.homeTabBuilder.update(actionArgs, content);
   }

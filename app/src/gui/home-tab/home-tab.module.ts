@@ -1,6 +1,7 @@
 import { CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "../../common/config/config.module";
+import { UserSettingsModule } from "../../entities/user-settings/user-settings.module";
 import { DevUiModule } from "../dev/dev-ui.module";
 import { HomeTabControls } from "./home-tab-controls";
 import { HomeTabController } from "./home-tab.controller";
@@ -16,6 +17,7 @@ import { SettingsView } from "./views/settings.view";
     RegistrationViewModule,
     PresenceViewModule,
     ConfigModule,
+    UserSettingsModule,
     CacheModule.register({
       max: 1000,
       ttl: 0,

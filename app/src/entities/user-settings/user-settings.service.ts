@@ -1,27 +1,26 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { SetVisibleOfficeDto, UpsertUserSettingsDto } from "./dto/user-settings.dto";
+import { UserService } from "../user/user.service";
 import { UserSettings, UserSettingsRepository } from "./user-settings.model";
 
 @Injectable()
 export class UserSettingsService {
+  private readonly logger = new Logger(UserSettingsService.name);
+
   constructor(
     @InjectRepository(UserSettings)
     private userSettingsRepository: UserSettingsRepository,
+    private userService: UserService,
   ) {}
 
-  async upsert(input: UpsertUserSettingsDto) {
-    return await this.userSettingsRepository.upsert(input, ["userSlackId"]);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async setVisibleOffice({ visibleOfficeId }: SetVisibleOfficeDto) {
-    // FIXME:
-    // await this.upsert({ userSlackId });
-    // FIXME:
-    // return this.userSettingsRepository.update(
-    //   { userSlackId },
-    //   { visibleOffice: { id: visibleOfficeId } },
-    // );
+  /**
+   * Update user settings by user ID.
+   *
+   * Update is partial so sparse `update` objects work well.
+   */
+  async update(userId: string, update: Partial<Omit<UserSettings, "id">>) {
+    const user = await this.userService.findPopulatedBySlackId(userId);
+    const res = await this.userSettingsRepository.update({ id: user.settings.id }, update);
+    this.logger.debug("User settings updated.", res);
   }
 }
