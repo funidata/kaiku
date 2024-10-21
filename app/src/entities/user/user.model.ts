@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryColumn, Repository } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, Repository } from "typeorm";
 import { UserSettings } from "../user-settings/user-settings.model";
 
 @Entity()
@@ -12,8 +12,9 @@ export class User {
   @Column({ type: "text" })
   realName: string;
 
-  @OneToOne(() => UserSettings, { cascade: true })
-  settings?: UserSettings;
+  @OneToOne(() => UserSettings, { cascade: true, eager: true })
+  @JoinColumn()
+  settings: UserSettings;
 }
 
 export type UserRepository = Repository<User>;

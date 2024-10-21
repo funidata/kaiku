@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-
 import { UpdateBasicInfoDto } from "./dto/user.dto";
 import { User, UserRepository } from "./user.model";
 
@@ -22,9 +21,10 @@ export class UserService {
   /**
    * Create new user with default settings.
    */
-  async create(user: User) {
+  async create(user: Omit<User, "settings">) {
     const res = await this.userRepository.save({
       ...user,
+      // Empty settings object here results in TypeORM applying default values to it.
       settings: {},
     });
     return res;

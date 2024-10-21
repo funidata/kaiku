@@ -10,29 +10,29 @@ export class VisibleOfficeSelect {
   async build() {
     const offices = await this.officeService.findAll();
 
-    // This avoids StaticSelect throwing an error for empty options list.
-    if (offices.length === 0) {
-      return [];
-    }
+    const OfficeOptions = offices
+      .toSorted((a, b) => a.name.localeCompare(b.name, "fi", { sensitivity: "base" }))
+      .map(({ id, name }) =>
+        Option({
+          text: name,
+          value: id.toString(),
+        }),
+      );
 
-    const Options = offices.map(({ id, name }) =>
-      Option({
-        text: name,
-        value: id.toString(),
-      }),
-    );
+    const AllOfficesOption = Option({ text: "Kaikki toimistot", value: "ALL_OFFICES" });
+    const RemoteOption = Option({ text: "Etänä", value: "REMOTE" });
 
     return [
       Section({
-        text: "Valitse, minkä toimipisteen paikallaolijat näytetään:",
+        text: "Työskentelypaikka:",
       }).accessory(
         StaticSelect({
-          placeholder: "Valitse toimipiste",
+          placeholder: "Valitse paikka",
           actionId: Action.SET_VISIBLE_OFFICE,
         })
           // TODO: Use user's selected office as initial value.
-          .initialOption(Options[0])
-          .options(Options),
+          .initialOption(AllOfficesOption)
+          .options(AllOfficesOption, ...OfficeOptions, RemoteOption),
       ),
     ];
   }
