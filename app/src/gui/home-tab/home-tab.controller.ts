@@ -8,7 +8,7 @@ import { AppHomeOpenedArgs } from "../../bolt/types/app-home-opened.type";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
 import { HomeTabService } from "./home-tab.service";
 import { ViewCache } from "./view.cache";
-import { PresenceView } from "./views/presence.view";
+import { PresenceView } from "./views/presence/presence.view";
 import { RegistrationView } from "./views/registration/registration.view";
 import { SettingsView } from "./views/settings.view";
 

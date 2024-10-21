@@ -1,13 +1,12 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn, Repository } from "typeorm";
-import { Office } from "../office/office.model";
+import { Column, Entity, PrimaryGeneratedColumn, Repository } from "typeorm";
 
 @Entity()
 export class UserSettings {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => Office, { eager: true })
-  visibleOffice: Office;
+  @Column({ type: "text", default: "ALL_OFFICES" })
+  officeFilter: string;
 }
 
 export type UserSettingsRepository = Repository<UserSettings>;
