@@ -4,7 +4,7 @@ import Action from "../../../../bolt/enums/action.enum";
 import { OfficeService } from "../../../../entities/office/office.service";
 
 @Injectable()
-export class VisibleOfficeSelect {
+export class OfficeFilter {
   constructor(private officeService: OfficeService) {}
 
   async build() {
@@ -28,7 +28,7 @@ export class VisibleOfficeSelect {
       }).accessory(
         StaticSelect({
           placeholder: "Valitse paikka",
-          actionId: Action.SET_VISIBLE_OFFICE,
+          actionId: Action.SET_OFFICE_FILTER_VALUE,
         })
           // TODO: Use user's selected office as initial value.
           .initialOption(AllOfficesOption)
