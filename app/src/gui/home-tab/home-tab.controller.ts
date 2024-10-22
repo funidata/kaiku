@@ -21,7 +21,7 @@ type ViewProps = {
 @Controller()
 export class HomeTabController {
   constructor(
-    private homeTabBuilder: HomeTabService,
+    private homeTabService: HomeTabService,
     private presenceView: PresenceView,
     private registrationView: RegistrationView,
     private settingsView: SettingsView,
@@ -41,7 +41,7 @@ export class HomeTabController {
       content = await this.registrationView.build(args.event.user);
     }
 
-    await this.homeTabBuilder.publish(args, content);
+    await this.homeTabService.publish(args, content);
   }
 
   @BoltAction(Action.OPEN_PRESENCE_VIEW)
@@ -81,6 +81,6 @@ export class HomeTabController {
     await actionArgs.ack();
     await this.userSettingsService.update(actionArgs.context.userId, { selectedView: name });
     const content = await contentFactory();
-    this.homeTabBuilder.update(actionArgs, content);
+    this.homeTabService.update(actionArgs, content);
   }
 }
