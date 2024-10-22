@@ -6,7 +6,6 @@ import { DevUiModule } from "../dev/dev-ui.module";
 import { HomeTabControls } from "./home-tab-controls";
 import { HomeTabController } from "./home-tab.controller";
 import { HomeTabService } from "./home-tab.service";
-import { ViewCache } from "./view.cache";
 import { PresenceViewModule } from "./views/presence/presence-view.module";
 import { RegistrationViewModule } from "./views/registration/registration-view.module";
 import { SettingsView } from "./views/settings.view";
@@ -23,7 +22,7 @@ import { SettingsView } from "./views/settings.view";
       ttl: 0,
     }),
   ],
-  providers: [HomeTabService, HomeTabControls, ViewCache, SettingsView],
+  providers: [HomeTabService, HomeTabControls, SettingsView],
   controllers: [HomeTabController],
   exports: [HomeTabService, RegistrationViewModule],
 })
