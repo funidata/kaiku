@@ -5,20 +5,17 @@ import Action from "../../bolt/enums/action.enum";
 import { ConfigService } from "../../common/config/config.service";
 import { UserSettingsService } from "../../entities/user-settings/user-settings.service";
 import { DevUiBuilder } from "../dev/dev-ui.builder";
-import { ViewCache } from "./view.cache";
 
 @Injectable()
 export class HomeTabControls {
   constructor(
     private devToolsBuilder: DevUiBuilder,
     private configService: ConfigService,
-    private viewCache: ViewCache,
     private userSettingsService: UserSettingsService,
   ) {}
 
   async build(userId: string): Promise<Appendable<ViewBlockBuilder>> {
-    const { selectedView } = await this.viewCache.get(userId);
-    // await this.userSettingsService.
+    const { selectedView } = await this.userSettingsService.findForUser(userId);
 
     const devTools = this.configService.getConfig().hideDevTools
       ? []

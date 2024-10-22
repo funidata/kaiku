@@ -23,4 +23,16 @@ export class UserSettingsService {
     const res = await this.userSettingsRepository.update({ id: user.settings.id }, update);
     this.logger.debug("User settings updated.", res);
   }
+
+  /**
+   * Find settings by user ID.
+   *
+   * This is really just syntactic sugar and under the hood uses the user
+   * service to fetch the complete user object and then returns only the
+   * settings part.
+   */
+  async findForUser(userId: string): Promise<UserSettings> {
+    const user = await this.userService.findPopulatedBySlackId(userId);
+    return user.settings;
+  }
 }
