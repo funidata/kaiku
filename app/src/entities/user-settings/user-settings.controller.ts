@@ -8,14 +8,10 @@ import { UserSettingsService } from "./user-settings.service";
 export class UserSettingsController {
   constructor(private userSettingsService: UserSettingsService) {}
 
+  // FIXME: Remove.
   @BoltAction(Action.SET_VISIBLE_OFFICE)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async setVisibleOffice({ ack, payload, body }: BoltActionArgs) {
     await ack();
-    const visibleOfficeId = Number(payload["selected_option"].value);
-    await this.userSettingsService.setVisibleOffice({
-      // userSlackId: body.user.id,
-      visibleOfficeId,
-    });
   }
 }

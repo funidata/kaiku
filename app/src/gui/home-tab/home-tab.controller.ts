@@ -6,9 +6,9 @@ import Action from "../../bolt/enums/action.enum";
 import Event from "../../bolt/enums/event.enum";
 import { AppHomeOpenedArgs } from "../../bolt/types/app-home-opened.type";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
+import { UserSettingsService } from "../../entities/user-settings/user-settings.service";
 import { HomeTabService } from "./home-tab.service";
-import { ViewCache } from "./view.cache";
-import { PresenceView } from "./views/presence.view";
+import { PresenceView } from "./views/presence/presence.view";
 import { RegistrationView } from "./views/registration/registration.view";
 import { SettingsView } from "./views/settings.view";
 
@@ -25,12 +25,12 @@ export class HomeTabController {
     private presenceView: PresenceView,
     private registrationView: RegistrationView,
     private settingsView: SettingsView,
-    private viewCache: ViewCache,
+    private userSettingsService: UserSettingsService,
   ) {}
 
   @BoltEvent(Event.APP_HOME_OPENED)
   async getView(args: AppHomeOpenedArgs) {
-    const { selectedView } = await this.viewCache.get(args.context.userId);
+    const { selectedView } = await this.userSettingsService.findForUser(args.context.userId);
     let content: Appendable<ViewBlockBuilder> = [];
 
     if (selectedView === "presence") {
@@ -79,7 +79,7 @@ export class HomeTabController {
    */
   private async openView({ actionArgs, contentFactory, name }: ViewProps) {
     await actionArgs.ack();
-    await this.viewCache.set(actionArgs.context.userId, { selectedView: name });
+    await this.userSettingsService.update(actionArgs.context.userId, { selectedView: name });
     const content = await contentFactory();
     this.homeTabBuilder.update(actionArgs, content);
   }

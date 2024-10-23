@@ -1,29 +1,28 @@
 import { CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "../../common/config/config.module";
-import { OfficeModule } from "../../entities/office/office.module";
-import { PresenceModule } from "../../entities/presence/presence.module";
+import { UserSettingsModule } from "../../entities/user-settings/user-settings.module";
 import { DevUiModule } from "../dev/dev-ui.module";
 import { HomeTabControls } from "./home-tab-controls";
 import { HomeTabController } from "./home-tab.controller";
 import { HomeTabService } from "./home-tab.service";
-import { ViewCache } from "./view.cache";
+import { PresenceViewModule } from "./views/presence/presence-view.module";
 import { RegistrationViewModule } from "./views/registration/registration-view.module";
 import { SettingsView } from "./views/settings.view";
 
 @Module({
   imports: [
     DevUiModule,
-    OfficeModule,
-    PresenceModule,
     RegistrationViewModule,
+    PresenceViewModule,
     ConfigModule,
+    UserSettingsModule,
     CacheModule.register({
       max: 1000,
       ttl: 0,
     }),
   ],
-  providers: [HomeTabService, HomeTabControls, ViewCache, SettingsView],
+  providers: [HomeTabService, HomeTabControls, SettingsView],
   controllers: [HomeTabController],
   exports: [HomeTabService, RegistrationViewModule],
 })
