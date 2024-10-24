@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Header } from "slack-block-builder";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
 import { PresenceService } from "../../../../entities/presence/presence.service";
-import { OfficeFilter } from "./visible-office-select";
+import { OfficeFilter } from "./office-filter";
 
 @Injectable()
 export class PresenceView {
