@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { SetOfficeDto, UpsertPresenceDto } from "./dto/presence.dto";
-import { Presence, PresenceRepository } from "./presence.model";
+import { Presence, PresenceRepository, PresenceType } from "./presence.model";
 
 @Injectable()
 export class PresenceService {
@@ -13,6 +13,14 @@ export class PresenceService {
 
   async findPresencesByUser(userId: string): Promise<Presence[]> {
     return this.presenceRepository.find({ where: { userId } });
+  }
+
+  async findByFilter(filter: {
+    date?: Date;
+    officeId?: string;
+    type?: PresenceType;
+  }): Promise<Presence[]> {
+    return this.presenceRepository.find({ where: filter });
   }
 
   async remove(presence: Pick<Presence, "userId" | "date">) {

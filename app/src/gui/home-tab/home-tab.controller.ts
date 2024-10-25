@@ -34,7 +34,7 @@ export class HomeTabController {
     let content: Appendable<ViewBlockBuilder> = [];
 
     if (selectedView === "presence") {
-      content = await this.presenceView.build();
+      content = await this.presenceView.build(args.event.user);
     } else if (selectedView === "settings") {
       content = await this.settingsView.build();
     } else {
@@ -48,7 +48,7 @@ export class HomeTabController {
   async openPresenceView(actionArgs: BoltActionArgs) {
     await this.openView({
       actionArgs,
-      contentFactory: async () => this.presenceView.build(),
+      contentFactory: async () => this.presenceView.build(actionArgs.context.userId),
       name: "presence",
     });
   }
