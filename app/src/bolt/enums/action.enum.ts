@@ -1,5 +1,6 @@
 enum Action {
   SYNC_USERS = "sync_users",
+  CLEAR_DATABASE = "clear_database",
   SET_OFFICE_PRESENCE = "set_office_presence",
   SET_REMOTE_PRESENCE = "set_remote_presence",
   SELECT_OFFICE_FOR_DATE = "select_office_for_date",

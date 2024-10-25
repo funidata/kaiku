@@ -8,6 +8,7 @@ export enum PresenceType {
 
 @Entity()
 export class Presence {
+  // TODO: Change to relation + add migration.
   @PrimaryColumn()
   userId: string;
 
