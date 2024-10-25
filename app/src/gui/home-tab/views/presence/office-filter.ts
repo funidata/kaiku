@@ -7,20 +7,23 @@ import { OfficeService } from "../../../../entities/office/office.service";
 export class OfficeFilter {
   constructor(private officeService: OfficeService) {}
 
-  async build() {
+  async build(selectedValue?: string) {
     const offices = await this.officeService.findAll();
 
-    const OfficeOptions = offices
+    const officeOptions = offices
       .toSorted((a, b) => a.name.localeCompare(b.name, "fi", { sensitivity: "base" }))
-      .map(({ id, name }) =>
-        Option({
-          text: name,
-          value: id.toString(),
-        }),
-      );
+      .map(({ id, name }) => ({
+        text: name,
+        value: id.toString(),
+      }));
 
-    const AllOfficesOption = Option({ text: "Kaikki toimistot", value: "ALL_OFFICES" });
-    const RemoteOption = Option({ text: "Etänä", value: "REMOTE" });
+    const options = [
+      { text: "Kaikki toimistot", value: "ALL_OFFICES" },
+      ...officeOptions,
+      { text: "Etänä", value: "REMOTE" },
+    ];
+
+    const initialOption = options.find((opt) => opt.value === selectedValue) || options[0];
 
     return [
       Section({
@@ -30,9 +33,8 @@ export class OfficeFilter {
           placeholder: "Valitse paikka",
           actionId: Action.SET_OFFICE_FILTER_VALUE,
         })
-          // TODO: Use user's selected office as initial value.
-          .initialOption(AllOfficesOption)
-          .options(AllOfficesOption, ...OfficeOptions, RemoteOption),
+          .initialOption(Option(initialOption))
+          .options(options.map((opt) => Option(opt))),
       ),
     ];
   }

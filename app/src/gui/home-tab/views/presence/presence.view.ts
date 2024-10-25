@@ -19,14 +19,13 @@ export class PresenceView {
     const userSettings = await this.userSettingsService.findForUser(userId);
     const presenceEntries = await this.fetchFilteredPresences(userSettings);
     console.log(presenceEntries);
-    const officeFilter = await this.officeFilter.build();
+    const officeFilter = await this.officeFilter.build(userSettings.officeFilter);
     return [Header({ text: "Läsnäolijat" }), ...officeFilter];
   }
 
   private async fetchFilteredPresences(settings: UserSettings): Promise<Presence[]> {
     const date = new Date();
     const type = settings.officeFilter === "REMOTE" ? PresenceType.REMOTE : PresenceType.OFFICE;
-
     return this.presenceService.findByFilter({ date, type });
   }
 }
