@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
-import { SetOfficeDto, UpsertPresenceDto } from "./dto/presence.dto";
+import { SelectPresenceDto, SetOfficeDto, UpsertPresenceDto } from "./dto/presence.dto";
 import { Presence, PresenceRepository, PresenceType } from "./presence.model";
 
 @Injectable()
@@ -12,7 +12,7 @@ export class PresenceService {
   ) {}
 
   async findPresencesByUser(userId: string): Promise<Presence[]> {
-    return this.presenceRepository.find({ where: { userId } });
+    return this.presenceRepository.find({ where: { user: { slackId: userId } } });
   }
 
   async findByFilter(filter: {
@@ -23,10 +23,11 @@ export class PresenceService {
     return this.presenceRepository.find({ where: filter });
   }
 
-  async remove(presence: Pick<Presence, "userId" | "date">) {
+  async remove(presence: SelectPresenceDto) {
     return this.presenceRepository.delete(presence);
   }
 
+  // FIXME: Type is wrong and the code below bad because of that. Refactor!
   async upsert(presence: Partial<UpsertPresenceDto>) {
     // Select only existing cols for the upsert operation to avoid overriding
     // existing data with defaults/nulls.
@@ -41,16 +42,16 @@ export class PresenceService {
       .createQueryBuilder()
       .insert()
       .into(Presence)
-      .values(presence)
-      .orUpdate(updatableCols, primaryKeys)
+      .values({ userSlackId: presence.userId, date: presence.date, type: presence.type })
+      .orUpdate(updatableCols, ["userSlackId", "date"])
       .execute();
   }
 
-  async setOffice({ userId: userId, date, officeId }: SetOfficeDto) {
-    await this.upsert({ userId: userId, date });
+  async setOffice({ userId, date, officeId }: SetOfficeDto) {
+    await this.upsert({ userId, date });
 
     return this.presenceRepository.update(
-      { userId: userId, date },
+      { user: { slackId: userId }, date },
       {
         office: { id: officeId },
       },
