@@ -14,13 +14,13 @@ export class UserSettings {
    *
    * This is either `Office.id`, `"ALL_OFFICES"`, or `"REMOTE"`.
    */
-  @Column({ type: "text", default: "ALL_OFFICES" })
+  @Column({ type: "text", name: "office_filter", default: "ALL_OFFICES" })
   officeFilter: string;
 
   /**
    * Selected home tab view.
    */
-  @Column({ type: "text", default: "registration" })
+  @Column({ type: "text", name: "selected_view", default: "registration" })
   selectedView: string;
 }
 

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryColumn, Repository } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, Repository } from "typeorm";
 import { Office } from "../office/office.model";
 import { User } from "../user/user.model";
 
@@ -9,12 +9,12 @@ export enum PresenceType {
 
 @Entity()
 export class Presence {
-  // TODO: Change to relation + add migration.
   @ManyToOne(() => User, { nullable: false })
+  @JoinColumn({ name: "user_slack_id" })
   user: User;
 
   // Add user relation to table's composite primary key.
-  @PrimaryColumn()
+  @PrimaryColumn({ name: "user_slack_id" })
   userSlackId: string;
 
   @PrimaryColumn({ type: "date" })
@@ -24,6 +24,7 @@ export class Presence {
   type: PresenceType | null;
 
   @ManyToOne(() => Office, { nullable: true })
+  @JoinColumn({ name: "office_id" })
   office: Office | null;
 }
 
