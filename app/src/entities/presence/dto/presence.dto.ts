@@ -1,8 +1,11 @@
-import { OmitType, PickType } from "@nestjs/swagger";
-import { Presence } from "../presence.model";
+import { PickType } from "@nestjs/swagger";
+import { PresenceType } from "../presence.model";
 
-export class UpsertPresenceDto extends OmitType(Presence, ["office", "user"]) {
+export class UpsertPresenceDto {
   userId: string;
+  date: Date;
+  type?: PresenceType;
+  officeId?: string;
 }
 
 export class SelectPresenceDto extends PickType(UpsertPresenceDto, ["userId", "date"]) {}
