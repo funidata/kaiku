@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { Header } from "slack-block-builder";
+import { Divider, Header } from "slack-block-builder";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
 import { Presence, PresenceType } from "../../../../entities/presence/presence.model";
 import { PresenceService } from "../../../../entities/presence/presence.service";
 import { UserSettings } from "../../../../entities/user-settings/user-settings.model";
 import { UserSettingsService } from "../../../../entities/user-settings/user-settings.service";
 import { OfficeFilter } from "./office-filter";
+import { PresenceList } from "./presence-list";
 
 @Injectable()
 export class PresenceView {
@@ -13,14 +14,22 @@ export class PresenceView {
     private presenceService: PresenceService,
     private officeFilter: OfficeFilter,
     private userSettingsService: UserSettingsService,
+    private presenceList: PresenceList,
   ) {}
 
   async build(userId: string): Promise<Appendable<ViewBlockBuilder>> {
     const userSettings = await this.userSettingsService.findForUser(userId);
     const presenceEntries = await this.fetchFilteredPresences(userSettings);
-    console.log(presenceEntries);
+
     const officeFilter = await this.officeFilter.build(userSettings.officeFilter);
-    return [Header({ text: "Läsnäolijat" }), ...officeFilter];
+    const results = this.presenceResults(presenceEntries);
+    return [Header({ text: "Läsnäolijat" }), ...officeFilter, Divider(), ...results];
+  }
+
+  private presenceResults(entries: Presence[]): Appendable<ViewBlockBuilder> {
+    // TODO: Group entries by date and sort.
+    const asd = this.presenceList.build([{ date: new Date(), entries }]);
+    return asd;
   }
 
   private async fetchFilteredPresences(settings: UserSettings): Promise<Presence[]> {

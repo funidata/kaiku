@@ -9,7 +9,7 @@ export enum PresenceType {
 
 @Entity()
 export class Presence {
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false, eager: true })
   @JoinColumn({ name: "user_slack_id" })
   user: User;
 
@@ -23,7 +23,7 @@ export class Presence {
   @Column({ type: "enum", enum: PresenceType, nullable: true })
   type: PresenceType | null;
 
-  @ManyToOne(() => Office, { nullable: true })
+  @ManyToOne(() => Office, { nullable: true, eager: true })
   @JoinColumn({ name: "office_id" })
   office: Office | null;
 }
