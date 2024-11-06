@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common";
+import { capitalize } from "lodash";
 import { Header } from "slack-block-builder";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
+import dayjs from "../../../../common/dayjs";
 import { Presence } from "../../../../entities/presence/presence.model";
 import { RichText } from "../../../block-builders/rich-text.builder";
 
@@ -13,12 +15,12 @@ type PresenceSearchResult = {
 export class PresenceList {
   build(results: PresenceSearchResult[]): Appendable<ViewBlockBuilder> {
     return results.flatMap((result) => [
-      Header({ text: "date" }),
-      RichText().elements(this.listFromEntries(result.entries)),
+      Header({ text: capitalize(dayjs(result.date).format("dddd D.M.")) }),
+      RichText().elements(this.entryList(result.entries)),
     ]);
   }
 
-  private listFromEntries(entries: Presence[]) {
+  private entryList(entries: Presence[]) {
     return {
       type: "rich_text_list",
       style: "bullet",

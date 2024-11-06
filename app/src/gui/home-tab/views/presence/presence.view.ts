@@ -28,7 +28,11 @@ export class PresenceView {
 
   private presenceResults(entries: Presence[]): Appendable<ViewBlockBuilder> {
     // TODO: Group entries by date and sort.
-    const asd = this.presenceList.build([{ date: new Date(), entries }]);
+    const asd = this.presenceList.build([
+      { date: new Date(), entries },
+      { date: new Date(), entries: [] },
+    ]);
+    console.log(asd);
     return asd;
   }
 
