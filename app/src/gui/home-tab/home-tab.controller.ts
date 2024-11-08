@@ -78,6 +78,13 @@ export class HomeTabController {
     await this.openPresenceView(actionArgs);
   }
 
+  @BoltAction(Action.SET_DATE_FILTER_VALUE)
+  async setDateFilterValue(actionArgs: BoltActionArgs) {
+    const dateFilter = actionArgs.payload["selected_date"];
+    await this.userSettingsService.update(actionArgs.context.userId, { dateFilter });
+    await this.openPresenceView(actionArgs);
+  }
+
   /**
    * Abstract helper to show home tab views with less boilerplate.
    *
