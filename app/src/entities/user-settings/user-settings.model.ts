@@ -17,6 +17,9 @@ export class UserSettings {
   @Column({ type: "text", name: "office_filter", default: "ALL_OFFICES" })
   officeFilter: string;
 
+  @Column({ type: "date", name: "date_filter", nullable: true })
+  dateFilter: string;
+
   /**
    * Selected home tab view.
    */
