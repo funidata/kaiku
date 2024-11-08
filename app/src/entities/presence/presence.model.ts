@@ -18,7 +18,7 @@ export class Presence {
   userSlackId: string;
 
   @PrimaryColumn({ type: "date" })
-  date: Date;
+  date: string;
 
   @Column({ type: "enum", enum: PresenceType, nullable: true })
   type: PresenceType | null;

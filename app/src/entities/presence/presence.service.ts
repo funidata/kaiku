@@ -12,7 +12,7 @@ export class PresenceService {
   }
 
   async findByFilter(filter: {
-    date?: Date;
+    date?: string;
     officeId?: string;
     type?: PresenceType;
   }): Promise<Presence[]> {

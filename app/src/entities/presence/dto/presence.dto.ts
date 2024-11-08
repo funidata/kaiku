@@ -3,7 +3,7 @@ import { PresenceType } from "../presence.model";
 
 export class UpsertPresenceDto {
   userId: string;
-  date: Date;
+  date: string;
   type?: PresenceType;
   officeId?: string;
 }

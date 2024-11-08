@@ -36,13 +36,14 @@ export class PresenceView {
       { date: new Date(), entries },
       { date: new Date(), entries: [] },
     ]);
-    console.log(asd);
     return asd;
   }
 
   private async fetchFilteredPresences(settings: UserSettings): Promise<Presence[]> {
-    const date = new Date();
     const type = settings.officeFilter === "REMOTE" ? PresenceType.REMOTE : PresenceType.OFFICE;
-    return this.presenceService.findByFilter({ date, type });
+    return this.presenceService.findByFilter({
+      date: settings.dateFilter || new Date().toISOString(),
+      type,
+    });
   }
 }
