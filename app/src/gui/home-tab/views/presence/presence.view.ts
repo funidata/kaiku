@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import dayjs from "dayjs";
 import { Divider, Header } from "slack-block-builder";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
 import { Presence, PresenceType } from "../../../../entities/presence/presence.model";
@@ -40,9 +41,14 @@ export class PresenceView {
   }
 
   private async fetchFilteredPresences(settings: UserSettings): Promise<Presence[]> {
+    const startDate = settings.dateFilter || new Date().toISOString();
+    const endDate = dayjs(startDate).add(2, "weeks").toISOString();
+
     const type = settings.officeFilter === "REMOTE" ? PresenceType.REMOTE : PresenceType.OFFICE;
+
     return this.presenceService.findByFilter({
-      date: settings.dateFilter || new Date().toISOString(),
+      startDate,
+      endDate,
       type,
     });
   }

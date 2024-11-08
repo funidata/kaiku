@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Between } from "typeorm";
+import { PresenceFilter } from "./dto/presence-filter.dto";
 import { SelectPresenceDto, SetOfficeDto, UpsertPresenceDto } from "./dto/presence.dto";
-import { Presence, PresenceRepository, PresenceType } from "./presence.model";
+import { Presence, PresenceRepository } from "./presence.model";
 
 @Injectable()
 export class PresenceService {
@@ -11,12 +13,9 @@ export class PresenceService {
     return this.presenceRepository.find({ where: { user: { slackId: userId } } });
   }
 
-  async findByFilter(filter: {
-    date?: string;
-    officeId?: string;
-    type?: PresenceType;
-  }): Promise<Presence[]> {
-    return this.presenceRepository.find({ where: filter });
+  async findByFilter({ date, startDate, endDate, ...filter }: PresenceFilter): Promise<Presence[]> {
+    const dateFilter = date || Between(startDate, endDate);
+    return this.presenceRepository.find({ where: { ...filter, date: dateFilter } });
   }
 
   async remove(presence: SelectPresenceDto) {
