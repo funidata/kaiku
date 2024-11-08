@@ -5,6 +5,7 @@ import { Presence, PresenceType } from "../../../../entities/presence/presence.m
 import { PresenceService } from "../../../../entities/presence/presence.service";
 import { UserSettings } from "../../../../entities/user-settings/user-settings.model";
 import { UserSettingsService } from "../../../../entities/user-settings/user-settings.service";
+import { DateFilter } from "./date-filter";
 import { OfficeFilter } from "./office-filter";
 import { PresenceList } from "./presence-list";
 
@@ -13,6 +14,7 @@ export class PresenceView {
   constructor(
     private presenceService: PresenceService,
     private officeFilter: OfficeFilter,
+    private dateFilter: DateFilter,
     private userSettingsService: UserSettingsService,
     private presenceList: PresenceList,
   ) {}
@@ -22,8 +24,10 @@ export class PresenceView {
     const presenceEntries = await this.fetchFilteredPresences(userSettings);
 
     const officeFilter = await this.officeFilter.build(userSettings.officeFilter);
+    const dateFilter = this.dateFilter.build();
     const results = this.presenceResults(presenceEntries);
-    return [Header({ text: "Läsnäolijat" }), ...officeFilter, Divider(), ...results];
+
+    return [Header({ text: "Läsnäolijat" }), ...officeFilter, ...dateFilter, Divider(), ...results];
   }
 
   private presenceResults(entries: Presence[]): Appendable<ViewBlockBuilder> {
