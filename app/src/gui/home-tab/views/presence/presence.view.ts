@@ -24,7 +24,7 @@ export class PresenceView {
     const presenceEntries = await this.fetchFilteredPresences(userSettings);
 
     const officeFilter = await this.officeFilter.build(userSettings.officeFilter);
-    const dateFilter = this.dateFilter.build();
+    const dateFilter = this.dateFilter.build(userSettings.dateFilter);
     const results = this.presenceResults(presenceEntries);
 
     return [Header({ text: "Läsnäolijat" }), ...officeFilter, ...dateFilter, Divider(), ...results];
