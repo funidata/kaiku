@@ -16,16 +16,12 @@ export class PresenceList {
   build(results: PresenceSearchResult[]): Appendable<ViewBlockBuilder> {
     return results.flatMap((result) => [
       Header({ text: capitalize(dayjs(result.date).format("dddd D.M.")) }),
-      RichText().elements(this.entryList(result.entries)),
+      RichText().elements({
+        type: "rich_text_list",
+        style: "bullet",
+        elements: this.peopleList(result.entries),
+      }),
     ]);
-  }
-
-  private entryList(entries: Presence[]) {
-    return {
-      type: "rich_text_list",
-      style: "bullet",
-      elements: this.peopleList(entries),
-    };
   }
 
   private peopleList(entries: Presence[]) {
