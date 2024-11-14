@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { Dayjs } from "dayjs";
 import { capitalize } from "lodash";
 import { Header } from "slack-block-builder";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
@@ -7,7 +8,7 @@ import { Presence } from "../../../../entities/presence/presence.model";
 import { RichText } from "../../../block-builders/rich-text.builder";
 
 type PresenceSearchResult = {
-  date: Date;
+  date: Dayjs;
   entries: Presence[];
 };
 

@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import dayjs, { Dayjs } from "dayjs";
 import { Divider, Header } from "slack-block-builder";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
+import { workDayRange } from "../../../../common/work-day-range";
 import { Presence, PresenceType } from "../../../../entities/presence/presence.model";
 import { PresenceService } from "../../../../entities/presence/presence.service";
 import { UserSettings } from "../../../../entities/user-settings/user-settings.model";
@@ -43,32 +44,22 @@ export class PresenceView {
       type,
     });
 
-    return this.groupByDateContinuous(entries, dayjs(startDate), dayjs(endDate));
+    return this.groupByDateContinuous(entries, dayjs(startDate));
   }
 
   /**
    * Group given presence list by date.
    *
-   * Result will include all days between `from` and `to`, inclusive. Weekends
-   * are excluded.
+   * Weekends are excluded but working days are included even if they have no
+   * entries.
    */
-  private groupByDateContinuous(entries: Presence[], from: Dayjs, to: Dayjs) {
-    const grouped = [];
-    let curr = from;
+  private groupByDateContinuous(entries: Presence[], from: Dayjs) {
+    const days = workDayRange(10, from);
 
-    while (to.diff(curr, "days") > 0) {
-      if (curr.day() === 0 || curr.day() === 6) {
-        curr = curr.add(1, "day");
-        continue;
-      }
-
-      grouped.push({
-        date: curr,
-        entries: entries.filter((entry) => dayjs(entry.date).isSame(curr, "day")),
-      });
-
-      curr = curr.add(1, "day");
-    }
+    const grouped = days.map((date) => ({
+      date,
+      entries: entries.filter((entry) => dayjs(entry.date).isSame(date, "day")),
+    }));
 
     return grouped;
   }
