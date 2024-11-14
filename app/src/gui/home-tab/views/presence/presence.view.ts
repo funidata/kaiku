@@ -49,13 +49,19 @@ export class PresenceView {
   /**
    * Group given presence list by date.
    *
-   * Result will include all days between `from` and `to`, inclusive.
+   * Result will include all days between `from` and `to`, inclusive. Weekends
+   * are excluded.
    */
   private groupByDateContinuous(entries: Presence[], from: Dayjs, to: Dayjs) {
     const grouped = [];
     let curr = from;
 
     while (to.diff(curr, "days") > 0) {
+      if (curr.day() === 0 || curr.day() === 6) {
+        curr = curr.add(1, "day");
+        continue;
+      }
+
       grouped.push({
         date: curr,
         entries: entries.filter((entry) => dayjs(entry.date).isSame(curr, "day")),
