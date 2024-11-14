@@ -31,15 +31,6 @@ export class PresenceView {
     return [Header({ text: "Läsnäolijat" }), ...officeFilter, ...dateFilter, Divider(), ...results];
   }
 
-  private presenceResults(entries: Presence[]): Appendable<ViewBlockBuilder> {
-    // TODO: Group entries by date and sort.
-    const asd = this.presenceList.build([
-      { date: new Date(), entries },
-      { date: new Date(), entries: [] },
-    ]);
-    return asd;
-  }
-
   private async fetchFilteredPresences(settings: UserSettings) {
     const startDate = settings.dateFilter || new Date().toISOString();
     const endDate = dayjs(startDate).add(2, "weeks").toISOString();

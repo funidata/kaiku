@@ -24,20 +24,28 @@ export class PresenceList {
     return {
       type: "rich_text_list",
       style: "bullet",
-      elements: entries.map((entry) => ({
-        type: "rich_text_section",
-        elements: [
-          {
-            type: "text",
-            text: `${entry.user.realName} (`,
-          },
-          {
-            type: "user",
-            user_id: entry.user.slackId,
-          },
-          { type: "text", text: ")" },
-        ],
-      })),
+      elements: this.peopleList(entries),
     };
+  }
+
+  private peopleList(entries: Presence[]) {
+    const sorted = entries.toSorted((a, b) =>
+      a.user.realName.localeCompare(b.user.realName, "fi", { sensitivity: "base" }),
+    );
+
+    return sorted.map((entry) => ({
+      type: "rich_text_section",
+      elements: [
+        {
+          type: "text",
+          text: `${entry.user.realName} (`,
+        },
+        {
+          type: "user",
+          user_id: entry.user.slackId,
+        },
+        { type: "text", text: ")" },
+      ],
+    }));
   }
 }
