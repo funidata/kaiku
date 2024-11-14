@@ -6,10 +6,11 @@ import { DateFilter } from "./date-filter";
 import { OfficeFilter } from "./office-filter";
 import { PresenceList } from "./presence-list";
 import { PresenceView } from "./presence.view";
+import { UserGroupFilter } from "./user-group-filter";
 
 @Module({
   imports: [OfficeModule, PresenceModule, UserSettingsModule],
-  providers: [PresenceView, OfficeFilter, DateFilter, PresenceList],
+  providers: [PresenceView, OfficeFilter, DateFilter, UserGroupFilter, PresenceList],
   exports: [PresenceView],
 })
 export class PresenceViewModule {}

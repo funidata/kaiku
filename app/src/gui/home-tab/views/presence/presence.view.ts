@@ -10,6 +10,7 @@ import { UserSettingsService } from "../../../../entities/user-settings/user-set
 import { DateFilter } from "./date-filter";
 import { OfficeFilter } from "./office-filter";
 import { PresenceList } from "./presence-list";
+import { UserGroupFilter } from "./user-group-filter";
 
 @Injectable()
 export class PresenceView {
@@ -17,6 +18,7 @@ export class PresenceView {
     private presenceService: PresenceService,
     private officeFilter: OfficeFilter,
     private dateFilter: DateFilter,
+    private userGroupFilter: UserGroupFilter,
     private userSettingsService: UserSettingsService,
     private presenceList: PresenceList,
   ) {}
@@ -27,9 +29,17 @@ export class PresenceView {
 
     const officeFilter = await this.officeFilter.build(userSettings.officeFilter);
     const dateFilter = this.dateFilter.build(userSettings.dateFilter);
+    const userGroupFilter = await this.userGroupFilter.build();
     const results = this.presenceList.build(presenceEntries);
 
-    return [Header({ text: "Läsnäolijat" }), ...officeFilter, ...dateFilter, Divider(), ...results];
+    return [
+      Header({ text: "Läsnäolijat" }),
+      ...officeFilter,
+      ...dateFilter,
+      ...userGroupFilter,
+      Divider(),
+      ...results,
+    ];
   }
 
   private async fetchFilteredPresences(settings: UserSettings) {
