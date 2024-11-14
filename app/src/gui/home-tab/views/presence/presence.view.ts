@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { Divider, Header } from "slack-block-builder";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
 import { Presence, PresenceType } from "../../../../entities/presence/presence.model";
@@ -26,7 +26,7 @@ export class PresenceView {
 
     const officeFilter = await this.officeFilter.build(userSettings.officeFilter);
     const dateFilter = this.dateFilter.build(userSettings.dateFilter);
-    const results = this.presenceResults(presenceEntries);
+    const results = this.presenceList.build(presenceEntries);
 
     return [Header({ text: "Läsnäolijat" }), ...officeFilter, ...dateFilter, Divider(), ...results];
   }
@@ -40,16 +40,39 @@ export class PresenceView {
     return asd;
   }
 
-  private async fetchFilteredPresences(settings: UserSettings): Promise<Presence[]> {
+  private async fetchFilteredPresences(settings: UserSettings) {
     const startDate = settings.dateFilter || new Date().toISOString();
     const endDate = dayjs(startDate).add(2, "weeks").toISOString();
 
     const type = settings.officeFilter === "REMOTE" ? PresenceType.REMOTE : PresenceType.OFFICE;
 
-    return this.presenceService.findByFilter({
+    const entries = await this.presenceService.findByFilter({
       startDate,
       endDate,
       type,
     });
+
+    return this.groupByDateContinuous(entries, dayjs(startDate), dayjs(endDate));
+  }
+
+  /**
+   * Group given presence list by date.
+   *
+   * Result will include all days between `from` and `to`, inclusive.
+   */
+  private groupByDateContinuous(entries: Presence[], from: Dayjs, to: Dayjs) {
+    const grouped = [];
+    let curr = from;
+
+    while (to.diff(curr, "days") > 0) {
+      grouped.push({
+        date: curr,
+        entries: entries.filter((entry) => dayjs(entry.date).isSame(curr, "day")),
+      });
+
+      curr = curr.add(1, "day");
+    }
+
+    return grouped;
   }
 }
