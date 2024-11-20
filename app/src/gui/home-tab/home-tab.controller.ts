@@ -73,7 +73,7 @@ export class HomeTabController {
 
   @BoltAction(Action.SET_OFFICE_FILTER_VALUE)
   async setOfficeFilterValue(actionArgs: BoltActionArgs) {
-    const officeFilter = actionArgs.payload["selected_option"].value;
+    const officeFilter = actionArgs.payload["selected_option"]?.value || "ALL_OFFICES";
     await this.userSettingsService.update(actionArgs.context.userId, { officeFilter });
     await this.openPresenceView(actionArgs);
   }
