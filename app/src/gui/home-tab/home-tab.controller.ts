@@ -85,6 +85,13 @@ export class HomeTabController {
     await this.openPresenceView(actionArgs);
   }
 
+  @BoltAction(Action.SET_USER_GROUP_FILTER_VALUE)
+  async setUserGroupFilterValue(actionArgs: BoltActionArgs) {
+    const userGroupFilter = actionArgs.payload["selected_option"]?.value;
+    await this.userSettingsService.update(actionArgs.context.userId, { userGroupFilter });
+    await this.openPresenceView(actionArgs);
+  }
+
   /**
    * Abstract helper to show home tab views with less boilerplate.
    *

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Input, Option, StaticSelect } from "slack-block-builder";
 import { BoltService } from "../../../../bolt/bolt.service";
+import Action from "../../../../bolt/enums/action.enum";
 
 @Injectable()
 export class UserGroupFilter {
@@ -19,7 +20,12 @@ export class UserGroupFilter {
 
     return [
       Input()
-        .element(StaticSelect().placeholder("Valitse ryhmä").options(options.map(Option)))
+        .element(
+          StaticSelect()
+            .placeholder("Valitse ryhmä")
+            .actionId(Action.SET_USER_GROUP_FILTER_VALUE)
+            .options(options.map(Option)),
+        )
         .label("Käyttäjäryhmä:")
         .dispatchAction(true),
     ];

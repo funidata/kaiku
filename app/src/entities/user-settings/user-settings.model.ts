@@ -21,6 +21,12 @@ export class UserSettings {
   dateFilter: string;
 
   /**
+   * Selected user group.
+   */
+  @Column({ type: "text", name: "user_group_filter", nullable: true })
+  userGroupFilter: string;
+
+  /**
    * Selected home tab view.
    */
   @Column({ type: "text", name: "selected_view", default: "registration" })
