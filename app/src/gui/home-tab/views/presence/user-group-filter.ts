@@ -21,17 +21,15 @@ export class UserGroupFilter {
     const selectedOption = options.find((opt) => opt.value === selectedValue);
     const initialOption = selectedOption ? Option(selectedOption) : undefined;
 
-    return [
-      Input()
-        .element(
-          StaticSelect()
-            .placeholder("Valitse ryhmä")
-            .actionId(Action.SET_USER_GROUP_FILTER_VALUE)
-            .initialOption(initialOption)
-            .options(options.map(Option)),
-        )
-        .label("Käyttäjäryhmä:")
-        .dispatchAction(true),
-    ];
+    return Input()
+      .element(
+        StaticSelect()
+          .placeholder("Valitse ryhmä")
+          .actionId(Action.SET_USER_GROUP_FILTER_VALUE)
+          .initialOption(initialOption)
+          .options(options.map(Option)),
+      )
+      .label("Käyttäjäryhmä:")
+      .dispatchAction(true);
   }
 }

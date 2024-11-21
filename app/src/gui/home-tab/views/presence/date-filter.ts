@@ -7,17 +7,15 @@ export class DateFilter {
   build(selectedDate?: string) {
     const initialDate = selectedDate ? new Date(selectedDate) : new Date();
 
-    return [
-      Input()
-        .element(
-          DatePicker()
-            .placeholder("Valitse alkupäivä")
-            .initialDate(initialDate)
-            .actionId(Action.SET_DATE_FILTER_VALUE),
-        )
-        .label("Alkaen")
-        .hint("Tiedot näytetään valitusta päivästä kaksi viikkoa eteenpäin.")
-        .dispatchAction(true),
-    ];
+    return Input()
+      .element(
+        DatePicker()
+          .placeholder("Valitse alkupäivä")
+          .initialDate(initialDate)
+          .actionId(Action.SET_DATE_FILTER_VALUE),
+      )
+      .label("Alkaen")
+      .hint("Tiedot näytetään valitusta päivästä kaksi viikkoa eteenpäin.")
+      .dispatchAction(true);
   }
 }

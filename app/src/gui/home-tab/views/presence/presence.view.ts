@@ -34,9 +34,9 @@ export class PresenceView {
 
     return [
       Header({ text: "Läsnäolijat" }),
-      ...officeFilter,
-      ...dateFilter,
-      ...userGroupFilter,
+      officeFilter,
+      dateFilter,
+      userGroupFilter,
       Divider(),
       ...results,
     ];

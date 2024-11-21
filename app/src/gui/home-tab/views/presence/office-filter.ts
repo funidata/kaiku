@@ -25,17 +25,15 @@ export class OfficeFilter {
 
     const initialOption = options.find((opt) => opt.value === selectedValue) || options[0];
 
-    return [
-      Input()
-        .element(
-          StaticSelect()
-            .placeholder("Valitse paikka")
-            .actionId(Action.SET_OFFICE_FILTER_VALUE)
-            .initialOption(Option(initialOption))
-            .options(options.map((opt) => Option(opt))),
-        )
-        .label("Työskentelypaikka:")
-        .dispatchAction(true),
-    ];
+    return Input()
+      .element(
+        StaticSelect()
+          .placeholder("Valitse paikka")
+          .actionId(Action.SET_OFFICE_FILTER_VALUE)
+          .initialOption(Option(initialOption))
+          .options(options.map(Option)),
+      )
+      .label("Työskentelypaikka:")
+      .dispatchAction(true);
   }
 }
