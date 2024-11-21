@@ -52,6 +52,7 @@ export class PresenceView {
       startDate,
       endDate,
       type,
+      userGroup: settings.userGroupFilter,
     });
 
     return this.groupByDateContinuous(entries, dayjs(startDate));

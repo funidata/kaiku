@@ -6,4 +6,5 @@ export type PresenceFilter = {
   endDate?: string;
   officeId?: string;
   type?: PresenceType;
+  userGroup?: string;
 };
