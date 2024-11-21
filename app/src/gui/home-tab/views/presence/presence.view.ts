@@ -29,7 +29,7 @@ export class PresenceView {
 
     const officeFilter = await this.officeFilter.build(userSettings.officeFilter);
     const dateFilter = this.dateFilter.build(userSettings.dateFilter);
-    const userGroupFilter = await this.userGroupFilter.build();
+    const userGroupFilter = await this.userGroupFilter.build(userSettings.userGroupFilter);
     const results = this.presenceList.build(presenceEntries);
 
     return [

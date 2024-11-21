@@ -7,7 +7,7 @@ import Action from "../../../../bolt/enums/action.enum";
 export class UserGroupFilter {
   constructor(private boltService: BoltService) {}
 
-  async build() {
+  async build(selectedValue?: string) {
     const userGroupRes = await this.boltService.getBolt().client.usergroups.list();
     const userGroups = userGroupRes.usergroups || [];
 
@@ -18,12 +18,16 @@ export class UserGroupFilter {
         value: ug.handle,
       }));
 
+    const selectedOption = options.find((opt) => opt.value === selectedValue);
+    const initialOption = selectedOption ? Option(selectedOption) : undefined;
+
     return [
       Input()
         .element(
           StaticSelect()
             .placeholder("Valitse ryhmä")
             .actionId(Action.SET_USER_GROUP_FILTER_VALUE)
+            .initialOption(initialOption)
             .options(options.map(Option)),
         )
         .label("Käyttäjäryhmä:")

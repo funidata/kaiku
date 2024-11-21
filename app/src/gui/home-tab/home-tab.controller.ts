@@ -87,7 +87,7 @@ export class HomeTabController {
 
   @BoltAction(Action.SET_USER_GROUP_FILTER_VALUE)
   async setUserGroupFilterValue(actionArgs: BoltActionArgs) {
-    const userGroupFilter = actionArgs.payload["selected_option"]?.value;
+    const userGroupFilter = actionArgs.payload["selected_option"]?.value || null;
     await this.userSettingsService.update(actionArgs.context.userId, { userGroupFilter });
     await this.openPresenceView(actionArgs);
   }
