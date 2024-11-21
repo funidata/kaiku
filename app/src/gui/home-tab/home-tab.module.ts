@@ -1,4 +1,3 @@
-import { CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "../../common/config/config.module";
 import { UserSettingsModule } from "../../entities/user-settings/user-settings.module";
@@ -17,10 +16,6 @@ import { SettingsView } from "./views/settings.view";
     PresenceViewModule,
     ConfigModule,
     UserSettingsModule,
-    CacheModule.register({
-      max: 1000,
-      ttl: 0,
-    }),
   ],
   providers: [HomeTabService, HomeTabControls, SettingsView],
   controllers: [HomeTabController],

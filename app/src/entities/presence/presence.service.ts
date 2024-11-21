@@ -54,12 +54,8 @@ export class PresenceService {
   }
 
   private async createUserFilter(userGroupHandle: string) {
-    // FIXME: Cache bolt user group request!
-    const userGroupResult = await this.boltService
-      .getBolt()
-      .client.usergroups.list({ include_users: true });
-
-    const userGroup = userGroupResult.usergroups.find((group) => group.handle === userGroupHandle);
+    const userGroups = await this.boltService.getUserGroups();
+    const userGroup = userGroups.find((group) => group.handle === userGroupHandle);
 
     if (!userGroup) {
       return null;
