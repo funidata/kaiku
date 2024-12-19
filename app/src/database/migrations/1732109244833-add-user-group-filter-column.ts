@@ -5,7 +5,7 @@ export class AddUserGroupFilterColumn1732109244833 implements MigrationInterface
     const table = await queryRunner.getTable("user_settings");
     await queryRunner.addColumn(
       table,
-      new TableColumn({ name: "date_filter", type: "text", isNullable: true }),
+      new TableColumn({ name: "user_group_filter", type: "text", isNullable: true }),
     );
   }
 
