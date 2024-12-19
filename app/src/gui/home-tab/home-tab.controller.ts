@@ -1,10 +1,10 @@
 import { Controller } from "@nestjs/common";
+import { AllMiddlewareArgs, StringIndexed } from "@slack/bolt";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
 import BoltAction from "../../bolt/decorators/bolt-action.decorator";
 import BoltEvent from "../../bolt/decorators/bolt-event.decorator";
 import Action from "../../bolt/enums/action.enum";
 import Event from "../../bolt/enums/event.enum";
-import { AppHomeOpenedArgs } from "../../bolt/types/app-home-opened.type";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
 import { UserSettingsService } from "../../entities/user-settings/user-settings.service";
 import { HomeTabService } from "./home-tab.service";
@@ -29,19 +29,20 @@ export class HomeTabController {
   ) {}
 
   @BoltEvent(Event.APP_HOME_OPENED)
-  async getView(args: AppHomeOpenedArgs) {
-    const { selectedView } = await this.userSettingsService.findForUser(args.context.userId);
+  async getView({ client, context }: AllMiddlewareArgs<StringIndexed>) {
+    const { userId } = context;
+    const { selectedView } = await this.userSettingsService.findForUser(userId);
     let content: Appendable<ViewBlockBuilder> = [];
 
     if (selectedView === "presence") {
-      content = await this.presenceView.build(args.event.user);
+      content = await this.presenceView.build(userId);
     } else if (selectedView === "settings") {
       content = await this.settingsView.build();
     } else {
-      content = await this.registrationView.build(args.event.user);
+      content = await this.registrationView.build(userId);
     }
 
-    await this.homeTabService.publish(args, content);
+    await this.homeTabService.publish({ client, content, userId });
   }
 
   @BoltAction(Action.OPEN_PRESENCE_VIEW)

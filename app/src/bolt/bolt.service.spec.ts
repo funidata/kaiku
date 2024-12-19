@@ -1,6 +1,6 @@
+import { CacheModule } from "@nestjs/cache-manager";
 import { Test } from "@nestjs/testing";
 import { App } from "@slack/bolt";
-import { StringIndexed } from "@slack/bolt/dist/types/helpers";
 import { ConfigServiceMock } from "../../test/mocks/config-service.mock";
 import { BoltService } from "./bolt.service";
 
@@ -11,6 +11,7 @@ describe("BoltService", () => {
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
+      imports: [CacheModule.register()],
       providers: [BoltService, ConfigServiceMock],
     }).compile();
 
@@ -32,7 +33,7 @@ describe("BoltService", () => {
 
     it("Returns Bolt instance", async () => {
       await boltService.connect();
-      expect(boltService.getBolt()).toBeInstanceOf(App<StringIndexed>);
+      expect(boltService.getBolt()).toBeInstanceOf(App);
     });
   });
 });

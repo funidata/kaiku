@@ -1,7 +1,6 @@
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { App, LogLevel } from "@slack/bolt";
-import { StringIndexed } from "@slack/bolt/dist/types/helpers";
 import { Cache } from "cache-manager";
 import { ConfigService } from "../common/config/config.service";
 import { BoltLogger } from "./bolt-logger";
@@ -9,7 +8,7 @@ import { UserGroup } from "./types/user-group.type";
 
 @Injectable()
 export class BoltService {
-  private bolt: App<StringIndexed>;
+  private bolt: App;
   private logger = new Logger(BoltService.name);
 
   constructor(
@@ -37,7 +36,7 @@ export class BoltService {
     await this.bolt.stop();
   }
 
-  getBolt(): App<StringIndexed> {
+  getBolt(): App {
     return this.bolt;
   }
 

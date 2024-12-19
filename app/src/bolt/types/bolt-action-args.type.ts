@@ -1,5 +1,9 @@
-import { AllMiddlewareArgs, BlockAction, SlackActionMiddlewareArgs } from "@slack/bolt";
-import { StringIndexed } from "@slack/bolt/dist/types/helpers";
+import {
+  AllMiddlewareArgs,
+  BlockAction,
+  SlackActionMiddlewareArgs,
+  StringIndexed,
+} from "@slack/bolt";
 
 export type BoltActionArgs = SlackActionMiddlewareArgs<BlockAction> &
   AllMiddlewareArgs<StringIndexed>;

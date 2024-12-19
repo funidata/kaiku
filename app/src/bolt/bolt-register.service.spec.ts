@@ -2,7 +2,6 @@ import { DiscoveryService } from "@golevelup/nestjs-discovery";
 import { ModuleRef } from "@nestjs/core";
 import { Test } from "@nestjs/testing";
 import { App } from "@slack/bolt";
-import { StringIndexed } from "@slack/bolt/dist/types/helpers";
 import { createMockProvider } from "../../test/mocks/mock-provider.factory";
 import { BoltRegisterService, EventType } from "./bolt-register.service";
 import { BoltService } from "./bolt.service";
@@ -36,7 +35,7 @@ const discoveredEvents = [
 ];
 
 describe("BoltRegisterService", () => {
-  let bolt: App<StringIndexed>;
+  let bolt: App;
   let bind: jest.Mock;
 
   beforeEach(async () => {
