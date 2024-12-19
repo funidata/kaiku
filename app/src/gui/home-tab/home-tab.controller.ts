@@ -1,4 +1,4 @@
-import { Controller } from "@nestjs/common";
+import { Controller, Logger } from "@nestjs/common";
 import { AllMiddlewareArgs, StringIndexed } from "@slack/bolt";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
 import BoltAction from "../../bolt/decorators/bolt-action.decorator";
@@ -20,6 +20,8 @@ type ViewProps = {
 
 @Controller()
 export class HomeTabController {
+  private readonly logger = new Logger(HomeTabController.name);
+
   constructor(
     private homeTabService: HomeTabService,
     private presenceView: PresenceView,
@@ -75,6 +77,10 @@ export class HomeTabController {
   @BoltAction(Action.SET_OFFICE_FILTER_VALUE)
   async setOfficeFilterValue(actionArgs: BoltActionArgs) {
     const officeFilter = actionArgs.payload["selected_option"]?.value || "ALL_OFFICES";
+    this.logger.debug(
+      `SET_OFFICE_FILTER_VALUE received selected option: ${actionArgs.payload["selected_option"]?.value}`,
+    );
+    this.logger.debug(`Update office filter value to ${officeFilter}`);
     await this.userSettingsService.update(actionArgs.context.userId, { officeFilter });
     await this.openPresenceView(actionArgs);
   }
@@ -88,7 +94,8 @@ export class HomeTabController {
 
   @BoltAction(Action.SET_USER_GROUP_FILTER_VALUE)
   async setUserGroupFilterValue(actionArgs: BoltActionArgs) {
-    const userGroupFilter = actionArgs.payload["selected_option"]?.value || null;
+    const receivedValue = actionArgs.payload["selected_option"]?.value;
+    const userGroupFilter = !receivedValue || receivedValue == "ALL_GROUPS" ? null : receivedValue;
     await this.userSettingsService.update(actionArgs.context.userId, { userGroupFilter });
     await this.openPresenceView(actionArgs);
   }

@@ -18,15 +18,15 @@ export class UserGroupFilter {
         value: ug.handle,
       }));
 
-    const selectedOption = options.find((opt) => opt.value === selectedValue);
-    const initialOption = selectedOption ? Option(selectedOption) : undefined;
+    options.unshift({ text: "Kaikki ryhmät", value: "ALL_GROUPS" });
+    const initialOption = options.find((opt) => opt.value === selectedValue) || options[0];
 
     return Input()
       .element(
         StaticSelect()
           .placeholder("Valitse ryhmä")
           .actionId(Action.SET_USER_GROUP_FILTER_VALUE)
-          .initialOption(initialOption)
+          .initialOption(Option(initialOption))
           .options(options.map(Option)),
       )
       .label("Käyttäjäryhmä:")
