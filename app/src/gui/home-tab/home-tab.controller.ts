@@ -10,7 +10,7 @@ import { UserSettingsService } from "../../entities/user-settings/user-settings.
 import { HomeTabService } from "./home-tab.service";
 import { PresenceView } from "./views/presence/presence.view";
 import { RegistrationView } from "./views/registration/registration.view";
-import { SettingsView } from "./views/settings.view";
+import { SettingsView } from "./views/settings/settings.view";
 
 type ViewProps = {
   actionArgs: BoltActionArgs;

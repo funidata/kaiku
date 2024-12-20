@@ -7,7 +7,7 @@ import { HomeTabController } from "./home-tab.controller";
 import { HomeTabService } from "./home-tab.service";
 import { PresenceViewModule } from "./views/presence/presence-view.module";
 import { RegistrationViewModule } from "./views/registration/registration-view.module";
-import { SettingsView } from "./views/settings.view";
+import { SettingsView } from "./views/settings/settings.view";
 
 @Module({
   imports: [
