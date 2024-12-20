@@ -19,9 +19,15 @@ export class UserSettingsService {
    * Update is partial so sparse `update` objects work well.
    */
   async update(userId: string, update: Partial<Omit<UserSettings, "id">>) {
+    this.logger.debug(`Update user settings: ${JSON.stringify(update)}`);
     const user = await this.userService.findPopulatedBySlackId(userId);
+
+    if (Object.keys(update).includes("dateFilter")) {
+      update.dateFilterUpdatedAt = new Date().toISOString();
+    }
+
     const res = await this.userSettingsRepository.update({ id: user.settings.id }, update);
-    this.logger.debug("User settings updated.", res);
+    this.logger.debug(`User settings updated (affected rows: ${res.affected || 0}).`);
   }
 
   /**
