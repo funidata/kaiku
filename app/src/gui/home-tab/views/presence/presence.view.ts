@@ -24,7 +24,7 @@ export class PresenceView {
   ) {}
 
   async build(userId: string): Promise<Appendable<ViewBlockBuilder>> {
-    const userSettings = await this.userSettingsService.findForUser(userId);
+    const userSettings = await this.getUserSettings(userId);
     const presenceEntries = await this.fetchFilteredPresences(userSettings);
 
     const officeFilter = await this.officeFilter.build(userSettings.officeFilter);
@@ -73,5 +73,27 @@ export class PresenceView {
     }));
 
     return grouped;
+  }
+
+  /**
+   * Reset date filter to today if it was last set earlier than today.
+   *
+   * The idea here is to make presence view automatically show today's presences
+   * first while still retaining the ability to choose a date and persist the
+   * selection throughout switching views.
+   */
+  private async resetDateFilterDaily(userId: string, userSettings: UserSettings) {
+    const { dateFilterUpdatedAt } = userSettings;
+    if (!dateFilterUpdatedAt || dayjs(dateFilterUpdatedAt).isBefore(dayjs(), "day")) {
+      await this.userSettingsService.update(userId, { dateFilter: dayjs().toISOString() });
+      return this.userSettingsService.findForUser(userId);
+    }
+
+    return userSettings;
+  }
+
+  private async getUserSettings(userId: string) {
+    const userSettings = await this.userSettingsService.findForUser(userId);
+    return this.resetDateFilterDaily(userId, userSettings);
   }
 }
