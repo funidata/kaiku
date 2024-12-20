@@ -20,6 +20,9 @@ export class UserSettings {
   @Column({ type: "date", name: "date_filter", nullable: true })
   dateFilter: string;
 
+  @Column({ type: "date", name: "date_filter_updated_at", nullable: true })
+  dateFilterUpdatedAt: string;
+
   /**
    * Selected user group.
    */
