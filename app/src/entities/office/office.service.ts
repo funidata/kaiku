@@ -9,4 +9,8 @@ export class OfficeService {
   async findAll() {
     return this.officeRepository.find();
   }
+
+  async create(name: string) {
+    return this.officeRepository.save({ name });
+  }
 }

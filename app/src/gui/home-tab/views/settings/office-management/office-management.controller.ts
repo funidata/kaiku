@@ -1,34 +1,52 @@
-import { Controller } from "@nestjs/common";
+import { Controller, InternalServerErrorException, Logger } from "@nestjs/common";
+import { get } from "lodash";
 import BoltAction from "../../../../../bolt/decorators/bolt-action.decorator";
+import BoltViewAction from "../../../../../bolt/decorators/bolt-view-action.decorator";
 import Action from "../../../../../bolt/enums/action.enum";
+import ViewAction from "../../../../../bolt/enums/view-action.enum";
 import { BoltActionArgs } from "../../../../../bolt/types/bolt-action-args.type";
+import { BoltViewActionArgs } from "../../../../../bolt/types/bolt-view-action-args.type";
+import { OfficeService } from "../../../../../entities/office/office.service";
 import { AddOfficeModal } from "./add-office.modal";
 import { OfficeManagementModal } from "./office-management.modal";
 
 @Controller()
 export class OfficeManagementController {
+  logger = new Logger(OfficeManagementController.name);
+
   constructor(
     private officeMgmtModal: OfficeManagementModal,
     private addOfficeModal: AddOfficeModal,
+    private officeService: OfficeService,
   ) {}
 
   @BoltAction(Action.OPEN_OFFICE_MANAGEMENT_MODAL)
   async openOfficeManagementModal(actionArgs: BoltActionArgs) {
-    const modal = await this.officeMgmtModal.build();
-
     actionArgs.client.views.open({
       trigger_id: actionArgs.body.trigger_id,
-      view: modal,
+      view: await this.officeMgmtModal.build(),
     });
   }
 
   @BoltAction(Action.OPEN_ADD_OFFICE_MODAL)
   async openAddOfficeModal(actionArgs: BoltActionArgs) {
-    const modal = await this.addOfficeModal.build();
-
     actionArgs.client.views.push({
       trigger_id: actionArgs.body.trigger_id,
-      view: modal,
+      view: await this.addOfficeModal.build(),
     });
+  }
+
+  @BoltViewAction(ViewAction.CREATE_OFFICE)
+  async createOffice({ view }: BoltViewActionArgs) {
+    // TODO: Check user's roles!
+    const officeName = get(view, "state.values.new_office.name.value");
+
+    if (!officeName) {
+      this.logger.error("Could not read office name from view submission payload.");
+      throw new InternalServerErrorException();
+    }
+
+    await this.officeService.create(officeName);
+    // TODO: Update previous view after creating.
   }
 }
