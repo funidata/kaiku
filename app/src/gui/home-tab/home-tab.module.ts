@@ -7,6 +7,7 @@ import { HomeTabController } from "./home-tab.controller";
 import { HomeTabService } from "./home-tab.service";
 import { PresenceViewModule } from "./views/presence/presence-view.module";
 import { RegistrationViewModule } from "./views/registration/registration-view.module";
+import { SettingsViewModule } from "./views/settings/settings-view.module";
 import { SettingsView } from "./views/settings/settings.view";
 
 @Module({
@@ -16,6 +17,7 @@ import { SettingsView } from "./views/settings/settings.view";
     PresenceViewModule,
     ConfigModule,
     UserSettingsModule,
+    SettingsViewModule,
   ],
   providers: [HomeTabService, HomeTabControls, SettingsView],
   controllers: [HomeTabController],

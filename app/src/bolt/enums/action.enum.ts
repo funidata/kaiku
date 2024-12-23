@@ -11,6 +11,7 @@ enum Action {
   OPEN_PRESENCE_VIEW = "open_presence_view",
   OPEN_REGISTRATION_VIEW = "open_registration_view",
   OPEN_SETTINGS_VIEW = "open_settings_view",
+  OPEN_OFFICE_MANAGEMENT_MODAL = "open_office_management_modal",
 }
 
 export default Action;
