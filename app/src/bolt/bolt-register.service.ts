@@ -53,6 +53,9 @@ export class BoltRegisterService {
 
   /**
    * Register handler function with Bolt API.
+   *
+   * Acknowledgements (or "acks") are sent automatically when an action is
+   * registered using this function.
    */
   private registerHandler(
     eventType: EventType,
@@ -63,7 +66,10 @@ export class BoltRegisterService {
     const bolt = this.boltService.getBolt();
 
     if (eventType === BOLT_ACTION_KEY) {
-      bolt.action(eventName, handler);
+      bolt.action(eventName, async (args) => {
+        await args.ack();
+        await handler(args);
+      });
     } else if (eventType === BOLT_EVENT_KEY) {
       bolt.event(eventName, handler);
     }

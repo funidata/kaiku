@@ -107,7 +107,6 @@ export class HomeTabController {
    * we take a content factory instead of prebuild content as an argument.
    */
   private async openView({ actionArgs, contentFactory, name }: ViewProps) {
-    await actionArgs.ack();
     await this.userSettingsService.update(actionArgs.context.userId, { selectedView: name });
     const content = await contentFactory();
     this.homeTabService.update(actionArgs, content);
