@@ -1,24 +1,33 @@
 import { Controller } from "@nestjs/common";
-import { BoltService } from "../../../../../bolt/bolt.service";
 import BoltAction from "../../../../../bolt/decorators/bolt-action.decorator";
 import Action from "../../../../../bolt/enums/action.enum";
 import { BoltActionArgs } from "../../../../../bolt/types/bolt-action-args.type";
+import { AddOfficeModal } from "./add-office.modal";
 import { OfficeManagementModal } from "./office-management.modal";
 
 @Controller()
 export class OfficeManagementController {
   constructor(
-    private boltService: BoltService,
     private officeMgmtModal: OfficeManagementModal,
+    private addOfficeModal: AddOfficeModal,
   ) {}
 
   @BoltAction(Action.OPEN_OFFICE_MANAGEMENT_MODAL)
-  async openOfficeManagementModal(actionsArgs: BoltActionArgs) {
-    const bolt = this.boltService.getBolt();
+  async openOfficeManagementModal(actionArgs: BoltActionArgs) {
     const modal = await this.officeMgmtModal.build();
 
-    bolt.client.views.open({
-      trigger_id: actionsArgs.body.trigger_id,
+    actionArgs.client.views.open({
+      trigger_id: actionArgs.body.trigger_id,
+      view: modal,
+    });
+  }
+
+  @BoltAction(Action.OPEN_ADD_OFFICE_MODAL)
+  async openAddOfficeModal(actionArgs: BoltActionArgs) {
+    const modal = await this.addOfficeModal.build();
+
+    actionArgs.client.views.push({
+      trigger_id: actionArgs.body.trigger_id,
       view: modal,
     });
   }
