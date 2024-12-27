@@ -11,10 +11,11 @@ export class EditOfficeModal {
       title: "Muokkaa toimistoa",
       submit: "Tallenna",
       close: "Eiku",
-      callbackId: ViewAction.CREATE_OFFICE,
+      callbackId: ViewAction.EDIT_OFFICE,
+      privateMetaData: office.id,
     })
       .blocks([
-        Input({ blockId: "new_office" })
+        Input({ blockId: "edit_office" })
           .label("Nimi")
           .element(TextInput({ actionId: "name", initialValue: office.name })),
       ])

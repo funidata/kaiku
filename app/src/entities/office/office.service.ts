@@ -17,4 +17,8 @@ export class OfficeService {
   async create(name: string) {
     return this.officeRepository.save({ name });
   }
+
+  async update(id: string, name: string) {
+    return this.officeRepository.update({ id }, { name });
+  }
 }

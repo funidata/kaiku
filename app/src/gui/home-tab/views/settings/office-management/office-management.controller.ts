@@ -69,4 +69,28 @@ export class OfficeManagementController {
       view: await this.officeMgmtModal.build(),
     });
   }
+
+  @BoltViewAction(ViewAction.EDIT_OFFICE)
+  async editOffice({ view, client, body }: BoltViewActionArgs) {
+    await this.authService.requireOwnerRole(body.user.id);
+
+    const officeId = view.private_metadata;
+    if (!officeId) {
+      this.logger.error("Could not read office ID from view submission payload.");
+      throw new InternalServerErrorException();
+    }
+
+    const officeName = get(view, "state.values.edit_office.name.value");
+    if (!officeName) {
+      this.logger.error("Could not read office name from view submission payload.");
+      throw new InternalServerErrorException();
+    }
+
+    await this.officeService.update(officeId, officeName);
+
+    await client.views.update({
+      view_id: view.root_view_id,
+      view: await this.officeMgmtModal.build(),
+    });
+  }
 }
