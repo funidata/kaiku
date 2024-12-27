@@ -27,10 +27,12 @@ export class OfficeManagementModal {
       return [Section({ text: "Yhtään toimistoa ei ole lisätty Kaikuun." })];
     }
 
-    return offices.map((office) =>
-      Section({ text: office.name }).accessory(
-        Button({ text: "Muokkaa", actionId: Action.OPEN_EDIT_OFFICE_MODAL, value: office.id }),
-      ),
-    );
+    return offices
+      .toSorted((a, b) => a.name.localeCompare(b.name, "fi", { sensitivity: "base" }))
+      .map((office) =>
+        Section({ text: office.name }).accessory(
+          Button({ text: "Muokkaa", actionId: Action.OPEN_EDIT_OFFICE_MODAL, value: office.id }),
+        ),
+      );
   }
 }
