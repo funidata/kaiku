@@ -6,6 +6,7 @@ import { createMockProvider } from "../../test/mocks/mock-provider.factory";
 import { BoltRegisterService, EventType } from "./bolt-register.service";
 import { BoltService } from "./bolt.service";
 import { BOLT_ACTION_KEY } from "./decorators/bolt-action.decorator";
+import { BOLT_EVENT_KEY } from "./decorators/bolt-event.decorator";
 
 const discoveredActions = [
   {
@@ -46,8 +47,15 @@ describe("BoltRegisterService", () => {
         BoltRegisterService,
         createMockProvider(BoltService),
         createMockProvider(DiscoveryService, {
-          controllerMethodsWithMetaAtKey: (et: EventType) =>
-            et === BOLT_ACTION_KEY ? discoveredActions : discoveredEvents,
+          controllerMethodsWithMetaAtKey: (et: EventType) => {
+            if (et === BOLT_ACTION_KEY) {
+              return discoveredActions;
+            }
+            if (et === BOLT_EVENT_KEY) {
+              return discoveredEvents;
+            }
+            return [];
+          },
         }),
         createMockProvider(ModuleRef, {
           get: () => ({ testmethod: { bind } }),
@@ -61,8 +69,8 @@ describe("BoltRegisterService", () => {
 
   it("Registers actions", async () => {
     expect(bolt.action).toHaveBeenCalledTimes(2);
-    expect(bolt.action).toHaveBeenCalledWith("test action 1", undefined);
-    expect(bolt.action).toHaveBeenCalledWith("test action 2", undefined);
+    expect(bolt.action).toHaveBeenCalledWith("test action 1", expect.any(Function));
+    expect(bolt.action).toHaveBeenCalledWith("test action 2", expect.any(Function));
   });
 
   it("Registers events", async () => {
