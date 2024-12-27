@@ -93,4 +93,17 @@ export class OfficeManagementController {
       view: await this.officeMgmtModal.build(),
     });
   }
+
+  @BoltAction(Action.DELETE_OFFICE)
+  async deleteOffice({ client, payload, body }: BoltActionArgs) {
+    await this.authService.requireOwnerRole(body.user.id);
+
+    const officeId = get(payload, "value");
+    await this.officeService.delete(officeId);
+
+    client.views.update({
+      view_id: body.view.root_view_id,
+      view: await this.officeMgmtModal.build(),
+    });
+  }
 }

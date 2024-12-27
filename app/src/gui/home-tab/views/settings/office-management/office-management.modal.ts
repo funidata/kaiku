@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Actions, Button, Modal, Section } from "slack-block-builder";
+import { Actions, Button, ConfirmationDialog, Modal, Section } from "slack-block-builder";
 import { SlackModalDto } from "slack-block-builder/dist/internal";
 import Action from "../../../../../bolt/enums/action.enum";
 import { Office } from "../../../../../entities/office/office.model";
@@ -29,10 +29,21 @@ export class OfficeManagementModal {
 
     return offices
       .toSorted((a, b) => a.name.localeCompare(b.name, "fi", { sensitivity: "base" }))
-      .map((office) =>
-        Section({ text: office.name }).accessory(
+      .map((office) => [
+        Section({ text: office.name }),
+        Actions().elements(
           Button({ text: "Muokkaa", actionId: Action.OPEN_EDIT_OFFICE_MODAL, value: office.id }),
+          Button({ text: "Poista", actionId: Action.DELETE_OFFICE, value: office.id })
+            .danger()
+            .confirm(
+              ConfirmationDialog({
+                confirm: "Poista",
+                deny: "Eiku",
+                text: `Haluatko varmasti poistaa toimiston "${office.name}"?`,
+              }).danger(),
+            ),
         ),
-      );
+      ])
+      .flat();
   }
 }

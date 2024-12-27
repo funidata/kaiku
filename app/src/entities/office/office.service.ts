@@ -21,4 +21,8 @@ export class OfficeService {
   async update(id: string, name: string) {
     return this.officeRepository.update({ id }, { name });
   }
+
+  async delete(id: string) {
+    return this.officeRepository.delete({ id });
+  }
 }
