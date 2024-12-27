@@ -28,7 +28,9 @@ export class OfficeManagementModal {
     }
 
     return offices.map((office) =>
-      Section({ text: office.name }).accessory(Button({ text: "Muokkaa" })),
+      Section({ text: office.name }).accessory(
+        Button({ text: "Muokkaa", actionId: Action.OPEN_EDIT_OFFICE_MODAL, value: office.id }),
+      ),
     );
   }
 }

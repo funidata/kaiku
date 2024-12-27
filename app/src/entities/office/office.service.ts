@@ -10,6 +10,10 @@ export class OfficeService {
     return this.officeRepository.find();
   }
 
+  async findById(id: string) {
+    return this.officeRepository.findOneBy({ id });
+  }
+
   async create(name: string) {
     return this.officeRepository.save({ name });
   }

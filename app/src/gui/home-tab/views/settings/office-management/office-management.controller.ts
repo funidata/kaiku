@@ -9,6 +9,7 @@ import { BoltActionArgs } from "../../../../../bolt/types/bolt-action-args.type"
 import { BoltViewActionArgs } from "../../../../../bolt/types/bolt-view-action-args.type";
 import { OfficeService } from "../../../../../entities/office/office.service";
 import { AddOfficeModal } from "./add-office.modal";
+import { EditOfficeModal } from "./edit-office.modal";
 import { OfficeManagementModal } from "./office-management.modal";
 
 @Controller()
@@ -18,6 +19,7 @@ export class OfficeManagementController {
   constructor(
     private officeMgmtModal: OfficeManagementModal,
     private addOfficeModal: AddOfficeModal,
+    private editOfficeModal: EditOfficeModal,
     private officeService: OfficeService,
     private authService: AuthorizationService,
   ) {}
@@ -35,6 +37,17 @@ export class OfficeManagementController {
     await actionArgs.client.views.push({
       trigger_id: actionArgs.body.trigger_id,
       view: await this.addOfficeModal.build(),
+    });
+  }
+
+  @BoltAction(Action.OPEN_EDIT_OFFICE_MODAL)
+  async openEditOfficeModal(actionArgs: BoltActionArgs) {
+    const officeId = get(actionArgs, "payload.value");
+    const office = await this.officeService.findById(officeId);
+
+    await actionArgs.client.views.push({
+      trigger_id: actionArgs.body.trigger_id,
+      view: await this.editOfficeModal.build(office),
     });
   }
 
