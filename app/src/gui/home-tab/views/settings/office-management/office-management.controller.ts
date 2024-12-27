@@ -1,4 +1,9 @@
-import { Controller, InternalServerErrorException, Logger } from "@nestjs/common";
+import {
+  Controller,
+  ForbiddenException,
+  InternalServerErrorException,
+  Logger,
+} from "@nestjs/common";
 import { get } from "lodash";
 import BoltAction from "../../../../../bolt/decorators/bolt-action.decorator";
 import BoltViewAction from "../../../../../bolt/decorators/bolt-view-action.decorator";
@@ -37,8 +42,12 @@ export class OfficeManagementController {
   }
 
   @BoltViewAction(ViewAction.CREATE_OFFICE)
-  async createOffice({ view, client }: BoltViewActionArgs) {
-    // TODO: Check user's roles!
+  async createOffice({ view, client, body }: BoltViewActionArgs) {
+    const { user } = await client.users.info({ user: body.user.id });
+    if (!user.is_owner) {
+      throw new ForbiddenException();
+    }
+
     const officeName = get(view, "state.values.new_office.name.value");
 
     if (!officeName) {
