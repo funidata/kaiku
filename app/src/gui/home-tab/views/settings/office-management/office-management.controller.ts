@@ -1,10 +1,6 @@
-import {
-  Controller,
-  ForbiddenException,
-  InternalServerErrorException,
-  Logger,
-} from "@nestjs/common";
+import { Controller, InternalServerErrorException, Logger } from "@nestjs/common";
 import { get } from "lodash";
+import { AuthorizationService } from "../../../../../authorization/authorization.service";
 import BoltAction from "../../../../../bolt/decorators/bolt-action.decorator";
 import BoltViewAction from "../../../../../bolt/decorators/bolt-view-action.decorator";
 import Action from "../../../../../bolt/enums/action.enum";
@@ -23,6 +19,7 @@ export class OfficeManagementController {
     private officeMgmtModal: OfficeManagementModal,
     private addOfficeModal: AddOfficeModal,
     private officeService: OfficeService,
+    private authService: AuthorizationService,
   ) {}
 
   @BoltAction(Action.OPEN_OFFICE_MANAGEMENT_MODAL)
@@ -43,10 +40,7 @@ export class OfficeManagementController {
 
   @BoltViewAction(ViewAction.CREATE_OFFICE)
   async createOffice({ view, client, body }: BoltViewActionArgs) {
-    const { user } = await client.users.info({ user: body.user.id });
-    if (!user.is_owner) {
-      throw new ForbiddenException();
-    }
+    await this.authService.requireOwnerRole(body.user.id);
 
     const officeName = get(view, "state.values.new_office.name.value");
 
