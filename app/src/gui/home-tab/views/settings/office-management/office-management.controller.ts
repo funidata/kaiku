@@ -22,7 +22,7 @@ export class OfficeManagementController {
 
   @BoltAction(Action.OPEN_OFFICE_MANAGEMENT_MODAL)
   async openOfficeManagementModal(actionArgs: BoltActionArgs) {
-    actionArgs.client.views.open({
+    await actionArgs.client.views.open({
       trigger_id: actionArgs.body.trigger_id,
       view: await this.officeMgmtModal.build(),
     });
@@ -30,14 +30,14 @@ export class OfficeManagementController {
 
   @BoltAction(Action.OPEN_ADD_OFFICE_MODAL)
   async openAddOfficeModal(actionArgs: BoltActionArgs) {
-    actionArgs.client.views.push({
+    await actionArgs.client.views.push({
       trigger_id: actionArgs.body.trigger_id,
       view: await this.addOfficeModal.build(),
     });
   }
 
   @BoltViewAction(ViewAction.CREATE_OFFICE)
-  async createOffice({ view }: BoltViewActionArgs) {
+  async createOffice({ view, client }: BoltViewActionArgs) {
     // TODO: Check user's roles!
     const officeName = get(view, "state.values.new_office.name.value");
 
@@ -47,6 +47,10 @@ export class OfficeManagementController {
     }
 
     await this.officeService.create(officeName);
-    // TODO: Update previous view after creating.
+
+    await client.views.update({
+      view_id: view.root_view_id,
+      view: await this.officeMgmtModal.build(),
+    });
   }
 }
