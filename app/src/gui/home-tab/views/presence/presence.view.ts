@@ -47,11 +47,15 @@ export class PresenceView {
     const endDate = dayjs(startDate).add(2, "weeks").toISOString();
 
     const type = settings.officeFilter === "REMOTE" ? PresenceType.REMOTE : PresenceType.OFFICE;
+    const officeId = !["REMOTE", "ALL_OFFICES"].includes(settings.officeFilter)
+      ? settings.officeFilter
+      : null;
 
     const entries = await this.presenceService.findByFilter({
       startDate,
       endDate,
       type,
+      officeId,
       userGroup: settings.userGroupFilter,
     });
 

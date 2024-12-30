@@ -22,12 +22,14 @@ export class PresenceService {
     startDate,
     endDate,
     userGroup,
+    officeId,
     ...filters
   }: PresenceFilter): Promise<Presence[]> {
     const dateFilter = date || Between(startDate, endDate);
     const userFilter = await this.createUserFilter(userGroup);
+
     return this.presenceRepository.find({
-      where: { ...filters, date: dateFilter, user: userFilter },
+      where: { ...filters, date: dateFilter, user: userFilter, office: { id: officeId } },
     });
   }
 
