@@ -15,6 +15,7 @@ enum Action {
   OPEN_ADD_OFFICE_MODAL = "open_add_office_modal",
   OPEN_EDIT_OFFICE_MODAL = "open_edit_office_modal",
   DELETE_OFFICE = "delete_office",
+  SET_HOME_OFFICE = "set_home_office",
 }
 
 export default Action;

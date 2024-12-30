@@ -40,10 +40,12 @@ export class SettingsView {
     return Input({
       label: "Kotitoimisto",
       hint: "Ilmoittautumisesi merkitään oletusarvoisesti valitsemallesi kotitoimistolle. Toimistoa voi vaihtaa ilmoittauttumiskohtaisesti.",
-    }).element(
-      StaticSelect({ placeholder: "Valitse toimisto" })
-        .options(options)
-        .initialOption(initialOption),
-    );
+    })
+      .dispatchAction(true)
+      .element(
+        StaticSelect({ placeholder: "Valitse toimisto", actionId: Action.SET_HOME_OFFICE })
+          .options(options)
+          .initialOption(initialOption),
+      );
   }
 }
