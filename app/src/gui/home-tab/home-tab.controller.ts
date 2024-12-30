@@ -39,7 +39,7 @@ export class HomeTabController {
     if (selectedView === "presence") {
       content = await this.presenceView.build(userId);
     } else if (selectedView === "settings") {
-      content = await this.settingsView.build();
+      content = await this.settingsView.build(userId);
     } else {
       content = await this.registrationView.build(userId);
     }
@@ -69,7 +69,7 @@ export class HomeTabController {
   async openSettingsView(actionArgs: BoltActionArgs) {
     await this.openView({
       actionArgs,
-      contentFactory: async () => this.settingsView.build(),
+      contentFactory: async () => this.settingsView.build(actionArgs.context.userId),
       name: "settings",
     });
   }

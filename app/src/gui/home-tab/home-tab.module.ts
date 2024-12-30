@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "../../common/config/config.module";
+import { OfficeModule } from "../../entities/office/office.module";
 import { UserSettingsModule } from "../../entities/user-settings/user-settings.module";
 import { DevUiModule } from "../dev/dev-ui.module";
 import { HomeTabControls } from "./home-tab-controls";
@@ -18,6 +19,7 @@ import { SettingsView } from "./views/settings/settings.view";
     ConfigModule,
     UserSettingsModule,
     SettingsViewModule,
+    OfficeModule,
   ],
   providers: [HomeTabService, HomeTabControls, SettingsView],
   controllers: [HomeTabController],
