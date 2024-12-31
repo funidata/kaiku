@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, Repository } from
 import { Office } from "../office/office.model";
 import { User } from "../user/user.model";
 
+// TODO: Remove.
 export enum PresenceType {
   OFFICE = "office",
   REMOTE = "remote",
@@ -20,8 +21,8 @@ export class Presence {
   @PrimaryColumn({ type: "date" })
   date: string;
 
-  @Column({ type: "enum", enum: PresenceType, nullable: true })
-  type: PresenceType | null;
+  @Column({ name: "remote", type: "boolean", nullable: false, default: false })
+  remote: boolean;
 
   @ManyToOne(() => Office, { nullable: true, eager: true })
   @JoinColumn({ name: "office_id" })
