@@ -14,13 +14,25 @@ export class UserSettings {
    *
    * This is either `Office.id`, `"ALL_OFFICES"`, or `"REMOTE"`.
    */
-  @Column({ type: "text", default: "ALL_OFFICES" })
+  @Column({ type: "text", name: "office_filter", default: "ALL_OFFICES" })
   officeFilter: string;
+
+  @Column({ type: "date", name: "date_filter", nullable: true })
+  dateFilter: string;
+
+  @Column({ type: "date", name: "date_filter_updated_at", nullable: true })
+  dateFilterUpdatedAt: string;
+
+  /**
+   * Selected user group.
+   */
+  @Column({ type: "text", name: "user_group_filter", nullable: true })
+  userGroupFilter: string;
 
   /**
    * Selected home tab view.
    */
-  @Column({ type: "text", default: "registration" })
+  @Column({ type: "text", name: "selected_view", default: "registration" })
   selectedView: string;
 }
 

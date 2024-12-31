@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { Member } from "@slack/web-api/dist/response/UsersListResponse";
 import { BoltService } from "./bolt.service";
+import { Member } from "./types/member.type";
 
 @Injectable()
 export class BoltUserService {

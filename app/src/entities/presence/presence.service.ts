@@ -1,51 +1,66 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DataSource } from "typeorm";
-import { SetOfficeDto, UpsertPresenceDto } from "./dto/presence.dto";
+import { Between, In } from "typeorm";
+import { BoltService } from "../../bolt/bolt.service";
+import { PresenceFilter } from "./dto/presence-filter.dto";
+import { SelectPresenceDto, SetOfficeDto, UpsertPresenceDto } from "./dto/presence.dto";
 import { Presence, PresenceRepository } from "./presence.model";
 
 @Injectable()
 export class PresenceService {
   constructor(
     @InjectRepository(Presence) private presenceRepository: PresenceRepository,
-    private dataSource: DataSource,
+    private boltService: BoltService,
   ) {}
 
   async findPresencesByUser(userId: string): Promise<Presence[]> {
-    return this.presenceRepository.find({ where: { userId } });
+    return this.presenceRepository.find({ where: { user: { slackId: userId } } });
   }
 
-  async remove(presence: Pick<Presence, "userId" | "date">) {
+  async findByFilter({
+    date,
+    startDate,
+    endDate,
+    userGroup,
+    ...filters
+  }: PresenceFilter): Promise<Presence[]> {
+    const dateFilter = date || Between(startDate, endDate);
+    const userFilter = await this.createUserFilter(userGroup);
+    return this.presenceRepository.find({
+      where: { ...filters, date: dateFilter, user: userFilter },
+    });
+  }
+
+  async remove(presence: SelectPresenceDto) {
     return this.presenceRepository.delete(presence);
   }
 
-  async upsert(presence: Partial<UpsertPresenceDto>) {
-    // Select only existing cols for the upsert operation to avoid overriding
-    // existing data with defaults/nulls.
-    const primaryKeys = ["userId", "date"];
-    const updatableCols = Object.keys(presence).filter((key) => !primaryKeys.includes(key));
-
-    if (updatableCols.length === 0) {
-      return;
-    }
-
-    return this.dataSource
-      .createQueryBuilder()
-      .insert()
-      .into(Presence)
-      .values(presence)
-      .orUpdate(updatableCols, primaryKeys)
-      .execute();
+  async upsert({ userId, ...presence }: UpsertPresenceDto) {
+    return this.presenceRepository.upsert({ userSlackId: userId, ...presence }, [
+      "userSlackId",
+      "date",
+    ]);
   }
 
-  async setOffice({ userId: userId, date, officeId }: SetOfficeDto) {
-    await this.upsert({ userId: userId, date });
+  async setOffice({ userId, date, officeId }: SetOfficeDto) {
+    await this.upsert({ userId, date });
 
     return this.presenceRepository.update(
-      { userId: userId, date },
+      { user: { slackId: userId }, date },
       {
         office: { id: officeId },
       },
     );
+  }
+
+  private async createUserFilter(userGroupHandle: string) {
+    const userGroups = await this.boltService.getUserGroups();
+    const userGroup = userGroups.find((group) => group.handle === userGroupHandle);
+
+    if (!userGroup) {
+      return null;
+    }
+
+    return In(userGroup.users);
   }
 }

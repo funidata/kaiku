@@ -1,5 +1,4 @@
 import { Controller, InternalServerErrorException } from "@nestjs/common";
-import dayjs from "dayjs";
 import BoltAction from "../../bolt/decorators/bolt-action.decorator";
 import Action from "../../bolt/enums/action.enum";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
@@ -19,7 +18,7 @@ export class PresenceController {
   @BoltAction(Action.SET_OFFICE_PRESENCE)
   async setOfficePresence(args: BoltActionArgs) {
     await args.ack();
-    const date = dayjs(args.payload["value"]).toDate();
+    const date = args.payload["value"];
     await this.presenceService.upsert({
       userId: args.body.user.id,
       type: PresenceType.OFFICE,
@@ -32,7 +31,7 @@ export class PresenceController {
   @BoltAction(Action.SET_REMOTE_PRESENCE)
   async setRemotePresence(args: BoltActionArgs) {
     await args.ack();
-    const date = dayjs(args.payload["value"]).toDate();
+    const date = args.payload["value"];
     await this.presenceService.upsert({
       userId: args.body.user.id,
       type: PresenceType.REMOTE,
@@ -48,7 +47,7 @@ export class PresenceController {
     const { value, date } = JSON.parse(args.payload["selected_option"].value);
     await this.presenceService.setOffice({
       userId: args.body.user.id,
-      date: dayjs(date).toDate(),
+      date,
       officeId: value,
     });
 
@@ -67,7 +66,7 @@ export class PresenceController {
 
     await this.presenceService.remove({
       userId: args.body.user.id,
-      date: dayjs(date).toDate(),
+      date,
     });
 
     await this.updateViewAfterAction(args);

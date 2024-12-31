@@ -1,4 +1,5 @@
 import { DiscoveryModule } from "@golevelup/nestjs-discovery";
+import { CacheModule } from "@nestjs/cache-manager";
 import {
   Global,
   Module,
@@ -13,7 +14,7 @@ import { BoltService } from "./bolt.service";
 
 @Global()
 @Module({
-  imports: [DiscoveryModule, ConfigModule],
+  imports: [DiscoveryModule, ConfigModule, CacheModule.register()],
   providers: [BoltService, BoltRegisterService, BoltUserService],
   exports: [BoltService, BoltUserService],
 })

@@ -4,7 +4,7 @@ import Action from "../../bolt/enums/action.enum";
 
 @Injectable()
 export class DevUiBuilder {
-  buildBlocks() {
+  build() {
     return [
       Header({ text: ":wrench:  Developer Tools" }),
       Actions().elements(
@@ -12,6 +12,7 @@ export class DevUiBuilder {
           text: ":recycle:  Sync Users",
           actionId: Action.SYNC_USERS,
         }),
+        Button({ text: ":put_litter_in_its_place:  Clear DB", actionId: Action.CLEAR_DATABASE }),
       ),
       Context().elements(
         "In development environment, users are not synchronized between local database and Slack on app start to avoid running into API rate limits due to hot-reloads. Sync users manually when necessary.",

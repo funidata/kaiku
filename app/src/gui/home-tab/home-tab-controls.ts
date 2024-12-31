@@ -19,7 +19,7 @@ export class HomeTabControls {
 
     const devTools = this.configService.getConfig().hideDevTools
       ? []
-      : this.devToolsBuilder.buildBlocks();
+      : this.devToolsBuilder.build();
 
     return [
       ...devTools,
