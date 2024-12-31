@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { Divider, Header } from "slack-block-builder";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
 import { workDayRange } from "../../../../common/work-day-range";
-import { Presence, PresenceType } from "../../../../entities/presence/presence.model";
+import { Presence } from "../../../../entities/presence/presence.model";
 import { PresenceService } from "../../../../entities/presence/presence.service";
 import { UserSettings } from "../../../../entities/user-settings/user-settings.model";
 import { UserSettingsService } from "../../../../entities/user-settings/user-settings.service";
@@ -46,7 +46,7 @@ export class PresenceView {
     const startDate = settings.dateFilter || new Date().toISOString();
     const endDate = dayjs(startDate).add(2, "weeks").toISOString();
 
-    const type = settings.officeFilter === "REMOTE" ? PresenceType.REMOTE : PresenceType.OFFICE;
+    const remote = settings.officeFilter === "REMOTE";
     const officeId = !["REMOTE", "ALL_OFFICES"].includes(settings.officeFilter)
       ? settings.officeFilter
       : null;
@@ -54,7 +54,7 @@ export class PresenceView {
     const entries = await this.presenceService.findByFilter({
       startDate,
       endDate,
-      type,
+      remote,
       officeId,
       userGroup: settings.userGroupFilter,
     });

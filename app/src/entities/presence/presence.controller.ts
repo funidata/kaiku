@@ -4,7 +4,6 @@ import Action from "../../bolt/enums/action.enum";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
 import { HomeTabService } from "../../gui/home-tab/home-tab.service";
 import { RegistrationView } from "../../gui/home-tab/views/registration/registration.view";
-import { PresenceType } from "./presence.model";
 import { PresenceService } from "./presence.service";
 
 @Controller()
@@ -20,7 +19,6 @@ export class PresenceController {
     const date = args.payload["value"];
     await this.presenceService.upsert({
       userId: args.body.user.id,
-      type: PresenceType.OFFICE,
       date,
     });
 
@@ -32,7 +30,7 @@ export class PresenceController {
     const date = args.payload["value"];
     await this.presenceService.upsert({
       userId: args.body.user.id,
-      type: PresenceType.REMOTE,
+      remote: true,
       date,
     });
 
