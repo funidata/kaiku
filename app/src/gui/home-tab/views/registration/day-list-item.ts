@@ -28,12 +28,12 @@ export class DayListItem {
           text: "Toimistolla",
           actionId: Action.SET_OFFICE_PRESENCE,
           value: dateString,
-        }).primary(currentPresence?.type === "office"),
+        }).primary(currentPresence?.remote === false),
         Button({
           text: "Etänä",
           actionId: Action.SET_REMOTE_PRESENCE,
           value: dateString,
-        }).primary(currentPresence?.type === "remote"),
+        }).primary(currentPresence?.remote === true),
         this.getOfficeBlocks(props),
         OverflowMenu({ actionId: Action.DAY_LIST_ITEM_OVERFLOW }).options(
           Option({
