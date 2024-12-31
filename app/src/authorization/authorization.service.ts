@@ -23,4 +23,10 @@ export class AuthorizationService {
       throw new UnauthorizedException();
     }
   }
+
+  async userIsOwner(userId: string): Promise<boolean> {
+    const bolt = this.boltService.getBolt();
+    const { user } = await bolt.client.users.info({ user: userId });
+    return !!user?.is_owner;
+  }
 }

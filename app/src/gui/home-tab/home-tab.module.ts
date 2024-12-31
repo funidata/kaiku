@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { AuthorizationModule } from "../../authorization/authorization.module";
 import { ConfigModule } from "../../common/config/config.module";
 import { OfficeModule } from "../../entities/office/office.module";
 import { UserSettingsModule } from "../../entities/user-settings/user-settings.module";
@@ -20,6 +21,7 @@ import { SettingsView } from "./views/settings/settings.view";
     UserSettingsModule,
     SettingsViewModule,
     OfficeModule,
+    AuthorizationModule,
   ],
   providers: [HomeTabService, HomeTabControls, SettingsView],
   controllers: [HomeTabController],
