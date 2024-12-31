@@ -15,6 +15,13 @@ export class Presence {
   @PrimaryColumn({ type: "date" })
   date: string;
 
+  /**
+   * Indicates whether user is working remotely or at office.
+   *
+   * This field should be always considered when handling presences – if there
+   * are no offices added to Kaiku, the `office` field will always be empty
+   * rendering using it alone for logic unreliable.
+   */
   @Column({ name: "remote", type: "boolean", nullable: false, default: false })
   remote: boolean;
 
