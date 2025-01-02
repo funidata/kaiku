@@ -5,10 +5,12 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Repository,
   UpdateDateColumn,
 } from "typeorm";
 import { Office } from "../office/office.model";
 import { User } from "../user/user.model";
+import { DateRange, daterangeTransformer } from "./daterange-transformer";
 
 @Entity()
 export class ConstantPresence {
@@ -19,9 +21,13 @@ export class ConstantPresence {
   @JoinColumn({ name: "user_slack_id" })
   user: User;
 
-  // TODO: Add transformer.
-  @Column({ name: "in_effect", type: "daterange", nullable: false })
-  inEffect: string;
+  @Column({
+    name: "in_effect",
+    type: "daterange",
+    nullable: false,
+    transformer: daterangeTransformer,
+  })
+  inEffect: DateRange;
 
   @Column({ name: "day_of_week", type: "integer", nullable: false, unsigned: true })
   dayOfWeek: number;
@@ -39,3 +45,5 @@ export class ConstantPresence {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 }
+
+export type ConstantPresenceRepository = Repository<ConstantPresence>;
