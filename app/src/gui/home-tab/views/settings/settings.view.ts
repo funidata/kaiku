@@ -29,6 +29,12 @@ export class SettingsView {
     return [
       Header({ text: "Asetukset" }),
       this.getHomeOfficeSelect(offices, settings),
+      Actions().elements(
+        Button({
+          text: "Vakioilmoittautumiset",
+          actionId: Action.OPEN_CONSTANT_PRESENCE_MANAGEMENT_MODAL,
+        }),
+      ),
       officeMgmtButton,
     ];
   }
