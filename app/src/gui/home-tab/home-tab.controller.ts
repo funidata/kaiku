@@ -1,12 +1,15 @@
 import { Controller, Logger } from "@nestjs/common";
 import { AllMiddlewareArgs, StringIndexed } from "@slack/bolt";
+import { Actions, Button, Header, HomeTab, Section } from "slack-block-builder";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
 import BoltAction from "../../bolt/decorators/bolt-action.decorator";
 import BoltEvent from "../../bolt/decorators/bolt-event.decorator";
 import Action from "../../bolt/enums/action.enum";
 import Event from "../../bolt/enums/event.enum";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
+import { WebClient } from "../../bolt/types/web-client.type";
 import { UserSettingsService } from "../../entities/user-settings/user-settings.service";
+import { UserService } from "../../entities/user/user.service";
 import { HomeTabService } from "./home-tab.service";
 import { PresenceView } from "./views/presence/presence.view";
 import { RegistrationView } from "./views/registration/registration.view";
@@ -28,11 +31,19 @@ export class HomeTabController {
     private registrationView: RegistrationView,
     private settingsView: SettingsView,
     private userSettingsService: UserSettingsService,
+    private userService: UserService,
   ) {}
 
   @BoltEvent(Event.APP_HOME_OPENED)
   async getView({ client, context }: AllMiddlewareArgs<StringIndexed>) {
+    this.logger.debug(Event.APP_HOME_OPENED);
+
     const { userId } = context;
+
+    if (!(await this.userService.findPopulatedBySlackId(userId))) {
+      return this.showUserNotFoundView(userId, client);
+    }
+
     const { selectedView } = await this.userSettingsService.findForUser(userId);
     let content: Appendable<ViewBlockBuilder> = [];
 
@@ -110,5 +121,30 @@ export class HomeTabController {
     await this.userSettingsService.update(actionArgs.context.userId, { selectedView: name });
     const content = await contentFactory();
     this.homeTabService.update(actionArgs, content);
+  }
+
+  private async showUserNotFoundView(userId: string, client: WebClient) {
+    await client.views.publish({
+      user_id: userId,
+      view: HomeTab()
+        .blocks(
+          Header({ text: ":sos: Käyttäjää ei löytynyt!" }),
+          Section({
+            text:
+              "Käyttäjääsi ei löydy Kaikun tietokannasta. Mikäli olet tuotantoympäristössä, " +
+              "tämä viittaa vakavaan virheeseen, koska käyttäjien synkronoinnin pitäisi tapahtua " +
+              "automaattisesti. Kehitysympäristössä synkronointia ei tehdä automaattisesti " +
+              "API-rajoitusten vuoksi. Voit synkronoida käyttäjät klikkaamalla alla olevaa nappia " +
+              "ja lataamalla tämän näkymän uudelleen.",
+          }),
+          Actions().elements(
+            Button({
+              text: ":recycle:  Sync Users",
+              actionId: Action.SYNC_USERS,
+            }),
+          ),
+        )
+        .buildToObject(),
+    });
   }
 }
