@@ -34,7 +34,7 @@ export class SettingsView {
   }
 
   private getHomeOfficeSelect(offices: Office[], settings: UserSettings) {
-    if (!offices) {
+    if (!offices.length) {
       return Section({
         text: "_Kotitoimiston valinta ei ole käytössä, koska Kaikuun ei ole vielä lisätty toimistoja._",
       });
