@@ -65,6 +65,11 @@ export class AddConstantPresenceTable1735653188488 implements MigrationInterface
         ],
       }),
     );
+
+    // Default B-tree index is not effective with the daterange type.
+    await queryRunner.query(
+      "CREATE INDEX in_effect_index ON constant_presence USING GIST (in_effect)",
+    );
   }
 
   public async down(): Promise<void> {}
