@@ -1,9 +1,8 @@
 import dayjs, { Dayjs } from "dayjs";
-import { ValueTransformer } from "typeorm";
 
 export type DateRange = {
-  start: Dayjs;
-  end: Dayjs;
+  start: Dayjs | undefined;
+  end: Dayjs | undefined;
 };
 
 /**
@@ -27,11 +26,11 @@ const parseValidDate = (value: unknown): Dayjs | undefined => {
  * Does not account for range inclusivity and exclusivity. Rather always assumes
  * that range start is inclusive and end is exclusive.
  */
-export const daterangeTransformer: ValueTransformer = {
+export const daterangeTransformer = {
   to: (value: DateRange) => {
     const format = "YYYY-MM-DD";
-    const start = dayjs(value.start).format(format);
-    const end = dayjs(value.end).format(format);
+    const start = value.start ? dayjs(value.start).format(format) : "";
+    const end = value.end ? dayjs(value.end).format(format) : "";
 
     return `[${start},${end})`;
   },

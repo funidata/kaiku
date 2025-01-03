@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { capitalize, range } from "lodash";
 import { Actions, Button, Header, Modal, Option, Section, StaticSelect } from "slack-block-builder";
 import { SlackModalDto } from "slack-block-builder/dist/internal";
+import ViewAction from "../../../../../bolt/enums/view-action.enum";
 import dayjs from "../../../../../common/dayjs";
 import { Office } from "../../../../../entities/office/office.model";
 import { OfficeService } from "../../../../../entities/office/office.service";
@@ -16,7 +17,12 @@ export class ConstantPresenceManagementModal {
       this.constantPresenceSelect(offices, dayOfWeek),
     );
 
-    return Modal({ title: "Vakioilmoittautumiset", submit: "Tallenna", close: "Eiku" })
+    return Modal({
+      title: "Vakioilmoittautumiset",
+      submit: "Tallenna",
+      close: "Eiku",
+      callbackId: ViewAction.SAVE_CONSTANT_PRESENCES,
+    })
       .blocks(
         Section({
           text:
@@ -41,8 +47,8 @@ export class ConstantPresenceManagementModal {
 
     return [
       Header({ text: capitalize(dayOfWeekName) }),
-      Actions().elements(
-        StaticSelect().options(options),
+      Actions({ blockId: `day-${dayOfWeek}` }).elements(
+        StaticSelect({ actionId: "presence" }).options(options),
         Button({ text: "Poista ilmoittautuminen" }).danger(),
       ),
     ];
