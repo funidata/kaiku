@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { randomUUID } from "crypto";
 import { capitalize, range } from "lodash";
 import {
   Actions,
@@ -11,6 +12,7 @@ import {
   StaticSelect,
 } from "slack-block-builder";
 import { SlackModalDto } from "slack-block-builder/dist/internal";
+import Action from "../../../../../bolt/enums/action.enum";
 import ViewAction from "../../../../../bolt/enums/view-action.enum";
 import dayjs from "../../../../../common/dayjs";
 import { ConstantPresence } from "../../../../../entities/constant-presence/constant-presence.model";
@@ -70,8 +72,12 @@ export class ConstantPresenceManagementModal {
     return [
       Header({ text: capitalize(dayOfWeekName) }),
       Actions({ blockId: `day-${dayOfWeek}` }).elements(
-        StaticSelect({ actionId: "presence" }).options(options).initialOption(initialOption),
-        Button({ text: "Poista ilmoittautuminen" }).danger(),
+        StaticSelect({ actionId: randomUUID() }).options(options).initialOption(initialOption),
+        Button({
+          text: "Poista ilmoittautuminen",
+          actionId: Action.DELETE_CONSTANT_PRESENCE,
+          value: dayOfWeek.toString(),
+        }).danger(),
       ),
     ];
   }

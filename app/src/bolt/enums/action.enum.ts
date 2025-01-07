@@ -17,6 +17,7 @@ enum Action {
   DELETE_OFFICE = "delete_office",
   SET_HOME_OFFICE = "set_home_office",
   OPEN_CONSTANT_PRESENCE_MANAGEMENT_MODAL = "open_constant_presence_management_modal",
+  DELETE_CONSTANT_PRESENCE = "delete_constant_presence",
 }
 
 export default Action;

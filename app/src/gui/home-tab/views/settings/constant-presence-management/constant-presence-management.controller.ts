@@ -25,6 +25,17 @@ export class ConstantPresenceManagementController {
     });
   }
 
+  @BoltAction(Action.DELETE_CONSTANT_PRESENCE)
+  async deleteConstantPresence({ payload, body, client }: BoltActionArgs) {
+    const dayOfWeek = Number(get(payload, "value"));
+    await this.cpService.closeEffectiveCpsByUserIdAndDayOfWeek(body.user.id, dayOfWeek);
+
+    client.views.update({
+      view_id: body.view.root_view_id,
+      view: await this.modal.build(body.user.id),
+    });
+  }
+
   @BoltViewAction(ViewAction.SAVE_CONSTANT_PRESENCES)
   async saveConstantPresences({ body, view }: BoltViewActionArgs) {
     const inserts = this.insertsFromModalStateValues(view.state.values);
@@ -49,7 +60,7 @@ export class ConstantPresenceManagementController {
   private insertsFromModalStateValues(stateValues: unknown): CreateConstantPresence[] {
     const valuesForAllDays = range(5).map((dayOfWeek) => ({
       dayOfWeek,
-      value: get(stateValues, `day-${dayOfWeek}.presence.selected_option.value`),
+      value: this.getSelectedValue(get(stateValues, `day-${dayOfWeek}`)),
     }));
 
     const selection = valuesForAllDays.filter((o) => o.value);
@@ -58,5 +69,20 @@ export class ConstantPresenceManagementController {
       dayOfWeek: selected.dayOfWeek,
       ...this.presencePropsFromStaticSelectValue(selected.value),
     }));
+  }
+
+  /**
+   * Get selected value from object with single randomly named field.
+   *
+   * Naming the fields randomly is necessary because otherwise Slack will not
+   * update the fields' initial values if they change from defined to undefined
+   * (i.e., the field is cleared).
+   *
+   * This is super convoluted but unfortunately there is no way around it with
+   * the current Bolt implementation.
+   */
+  private getSelectedValue(stateValue: unknown): string | undefined {
+    const randomKey = Object.keys(stateValue)[0];
+    return get(stateValue, `${randomKey}.selected_option.value`);
   }
 }

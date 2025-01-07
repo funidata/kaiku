@@ -54,4 +54,15 @@ export class ConstantPresenceService {
       .andWhere("in_effect @> NOW()::date")
       .execute();
   }
+
+  async closeEffectiveCpsByUserIdAndDayOfWeek(userId: string, dayOfWeek: number) {
+    return this.constantPresenceRepository
+      .createQueryBuilder()
+      .update()
+      .set({ inEffect: () => "daterange(lower(in_effect), NOW()::date)" })
+      .where("user_slack_id = :userId", { userId })
+      .andWhere("day_of_week = :dayOfWeek", { dayOfWeek })
+      .andWhere("in_effect @> NOW()::date")
+      .execute();
+  }
 }
