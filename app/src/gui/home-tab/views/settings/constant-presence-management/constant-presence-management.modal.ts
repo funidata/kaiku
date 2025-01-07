@@ -1,20 +1,36 @@
 import { Injectable } from "@nestjs/common";
 import { capitalize, range } from "lodash";
-import { Actions, Button, Header, Modal, Option, Section, StaticSelect } from "slack-block-builder";
+import {
+  Actions,
+  Button,
+  Header,
+  Modal,
+  Option,
+  OptionBuilder,
+  Section,
+  StaticSelect,
+} from "slack-block-builder";
 import { SlackModalDto } from "slack-block-builder/dist/internal";
 import ViewAction from "../../../../../bolt/enums/view-action.enum";
 import dayjs from "../../../../../common/dayjs";
+import { ConstantPresence } from "../../../../../entities/constant-presence/constant-presence.model";
+import { ConstantPresenceService } from "../../../../../entities/constant-presence/constant-presence.service";
 import { Office } from "../../../../../entities/office/office.model";
 import { OfficeService } from "../../../../../entities/office/office.service";
 
 @Injectable()
 export class ConstantPresenceManagementModal {
-  constructor(private officeService: OfficeService) {}
+  constructor(
+    private officeService: OfficeService,
+    private cpService: ConstantPresenceService,
+  ) {}
 
-  async build(): Promise<Readonly<SlackModalDto>> {
+  async build(userId: string): Promise<Readonly<SlackModalDto>> {
     const offices = await this.officeService.findAll();
+    const presences = await this.cpService.findEffectiveByUserId(userId);
+
     const selectBlocks = range(5).map((dayOfWeek) =>
-      this.constantPresenceSelect(offices, dayOfWeek),
+      this.constantPresenceSelect(offices, presences, dayOfWeek),
     );
 
     return Modal({
@@ -34,7 +50,13 @@ export class ConstantPresenceManagementModal {
       .buildToObject();
   }
 
-  private constantPresenceSelect(offices: Office[], dayOfWeek: number) {
+  private constantPresenceSelect(
+    offices: Office[],
+    presences: ConstantPresence[],
+    dayOfWeek: number,
+  ) {
+    const existing = presences.find((presence) => presence.dayOfWeek === dayOfWeek);
+
     const options = offices.map((office) => Option({ text: office.name, value: office.id }));
 
     if (!options.length) {
@@ -42,15 +64,39 @@ export class ConstantPresenceManagementModal {
     }
 
     options.push(Option({ text: "Etänä", value: "REMOTE" }));
-
+    const initialOption = this.getInitialOption(existing, options);
     const dayOfWeekName = dayjs().weekday(dayOfWeek).format("dddd");
 
     return [
       Header({ text: capitalize(dayOfWeekName) }),
       Actions({ blockId: `day-${dayOfWeek}` }).elements(
-        StaticSelect({ actionId: "presence" }).options(options),
+        StaticSelect({ actionId: "presence" }).options(options).initialOption(initialOption),
         Button({ text: "Poista ilmoittautuminen" }).danger(),
       ),
     ];
+  }
+
+  private getInitialOption(
+    existingPresence: ConstantPresence,
+    options: OptionBuilder[],
+  ): OptionBuilder | undefined {
+    if (!existingPresence) {
+      return undefined;
+    }
+
+    if (existingPresence.remote) {
+      return Option({ text: "Etänä", value: "REMOTE" });
+    }
+
+    const initialOption = existingPresence.office
+      ? Option({ text: existingPresence.office.name, value: existingPresence.office.id })
+      : Option({ text: "Toimistolla", value: "OFFICE" });
+
+    // Ensure the created option exists to avoid Bolt errors.
+    if (!options.find((opt) => opt.value === initialOption.value)) {
+      return undefined;
+    }
+
+    return initialOption;
   }
 }

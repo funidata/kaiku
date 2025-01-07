@@ -11,14 +11,17 @@ export class ConstantPresenceService {
     private constantPresenceRepository: ConstantPresenceRepository,
   ) {}
 
-  // async findEffectiveByUserId(userId: string) {
-  //   return this.constantPresenceRepository
-  //     .createQueryBuilder("cp")
-  //     .select()
-  //     .where("cp.user_slack_id = :userId", { userId })
-  //     .andWhere("in_effect @> NOW()::date")
-  //     .execute();
-  // }
+  async findEffectiveByUserId(userId: string): Promise<ConstantPresence[]> {
+    const res = await this.constantPresenceRepository
+      .createQueryBuilder("cp")
+      .select()
+      .leftJoinAndSelect("cp.office", "office")
+      .where("cp.user_slack_id = :userId", { userId })
+      .andWhere("in_effect @> NOW()::date")
+      .getRawAndEntities();
+
+    return res.entities;
+  }
 
   /**
    * Create new constant presences for user.

@@ -21,7 +21,7 @@ export class ConstantPresenceManagementController {
   async openModal({ client, body }: BoltActionArgs) {
     await client.views.open({
       trigger_id: body.trigger_id,
-      view: await this.modal.build(),
+      view: await this.modal.build(body.user.id),
     });
   }
 
