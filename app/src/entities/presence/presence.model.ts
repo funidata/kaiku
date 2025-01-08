@@ -2,11 +2,6 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, Repository } from
 import { Office } from "../office/office.model";
 import { User } from "../user/user.model";
 
-export enum PresenceType {
-  OFFICE = "office",
-  REMOTE = "remote",
-}
-
 @Entity()
 export class Presence {
   @ManyToOne(() => User, { nullable: false, eager: true })
@@ -20,8 +15,15 @@ export class Presence {
   @PrimaryColumn({ type: "date" })
   date: string;
 
-  @Column({ type: "enum", enum: PresenceType, nullable: true })
-  type: PresenceType | null;
+  /**
+   * Indicates whether user is working remotely or at office.
+   *
+   * This field should be always considered when handling presences – if there
+   * are no offices added to Kaiku, the `office` field will always be empty
+   * rendering using it alone for logic unreliable.
+   */
+  @Column({ name: "remote", type: "boolean", nullable: false, default: false })
+  remote: boolean;
 
   @ManyToOne(() => Office, { nullable: true, eager: true })
   @JoinColumn({ name: "office_id" })

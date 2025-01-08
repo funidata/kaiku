@@ -1,5 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
-import { PresenceType } from "../../entities/presence/presence.model";
+
+// Moved here after the (imported) enum was removed from code.
+enum PresenceType {
+  OFFICE = "office",
+  REMOTE = "remote",
+}
 
 export class CreatePresenceTable1726035621508 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -1,10 +1,9 @@
 import { PickType } from "@nestjs/swagger";
-import { PresenceType } from "../presence.model";
 
 export class UpsertPresenceDto {
   userId: string;
   date: string;
-  type?: PresenceType;
+  remote?: boolean;
   officeId?: string;
 }
 
