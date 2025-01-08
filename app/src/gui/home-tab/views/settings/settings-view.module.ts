@@ -10,5 +10,6 @@ import { SettingsView } from "./settings.view";
   imports: [OfficeManagementModule, OfficeModule, UserSettingsModule, AuthorizationModule],
   providers: [SettingsView],
   controllers: [SettingsViewController],
+  exports: [SettingsView],
 })
 export class SettingsViewModule {}

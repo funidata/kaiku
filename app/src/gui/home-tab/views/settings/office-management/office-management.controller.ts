@@ -3,11 +3,15 @@ import { get } from "lodash";
 import { AuthorizationService } from "../../../../../authorization/authorization.service";
 import BoltAction from "../../../../../bolt/decorators/bolt-action.decorator";
 import BoltViewAction from "../../../../../bolt/decorators/bolt-view-action.decorator";
+import BoltViewCloseAction from "../../../../../bolt/decorators/bolt-view-close-action.decorator";
 import Action from "../../../../../bolt/enums/action.enum";
 import ViewAction from "../../../../../bolt/enums/view-action.enum";
+import ViewCloseAction from "../../../../../bolt/enums/view-close-action.enum";
 import { BoltActionArgs } from "../../../../../bolt/types/bolt-action-args.type";
 import { BoltViewActionArgs } from "../../../../../bolt/types/bolt-view-action-args.type";
 import { OfficeService } from "../../../../../entities/office/office.service";
+import { HomeTabService } from "../../../home-tab.service";
+import { SettingsView } from "../settings.view";
 import { AddOfficeModal } from "./add-office.modal";
 import { EditOfficeModal } from "./edit-office.modal";
 import { OfficeManagementModal } from "./office-management.modal";
@@ -22,6 +26,8 @@ export class OfficeManagementController {
     private editOfficeModal: EditOfficeModal,
     private officeService: OfficeService,
     private authService: AuthorizationService,
+    private homeTabService: HomeTabService,
+    private settingsView: SettingsView,
   ) {}
 
   @BoltAction(Action.OPEN_OFFICE_MANAGEMENT_MODAL)
@@ -29,6 +35,15 @@ export class OfficeManagementController {
     await actionArgs.client.views.open({
       trigger_id: actionArgs.body.trigger_id,
       view: await this.officeMgmtModal.build(),
+    });
+  }
+
+  @BoltViewCloseAction(ViewCloseAction.OFFICE_MANAGEMENT_MODAL)
+  async closeOfficeManagementModal(actionArgs: BoltActionArgs) {
+    await this.homeTabService.publish({
+      userId: actionArgs.body.user.id,
+      client: actionArgs.client,
+      content: await this.settingsView.build(actionArgs.body.user.id),
     });
   }
 

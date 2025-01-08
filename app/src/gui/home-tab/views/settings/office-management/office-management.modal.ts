@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Actions, Button, ConfirmationDialog, Modal, Section } from "slack-block-builder";
 import { SlackModalDto } from "slack-block-builder/dist/internal";
 import Action from "../../../../../bolt/enums/action.enum";
+import ViewCloseAction from "../../../../../bolt/enums/view-close-action.enum";
 import { Office } from "../../../../../entities/office/office.model";
 import { OfficeService } from "../../../../../entities/office/office.service";
 
@@ -13,6 +14,8 @@ export class OfficeManagementModal {
     const offices = await this.officeService.findAll();
 
     return Modal({ title: "Toimistojen hallinta" })
+      .notifyOnClose()
+      .callbackId(ViewCloseAction.OFFICE_MANAGEMENT_MODAL)
       .blocks([
         ...this.buildOfficeList(offices),
         Actions().elements(
