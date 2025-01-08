@@ -1,4 +1,13 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn, Repository } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  Repository,
+} from "typeorm";
+import { Office } from "../office/office.model";
 import { User } from "../user/user.model";
 
 @Entity()
@@ -34,6 +43,10 @@ export class UserSettings {
    */
   @Column({ type: "text", name: "selected_view", default: "registration" })
   selectedView: string;
+
+  @ManyToOne(() => Office, { nullable: true, eager: true })
+  @JoinColumn({ name: "home_office_id" })
+  homeOffice: Office | null;
 }
 
 export type UserSettingsRepository = Repository<UserSettings>;

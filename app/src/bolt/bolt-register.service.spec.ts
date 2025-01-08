@@ -6,6 +6,9 @@ import { createMockProvider } from "../../test/mocks/mock-provider.factory";
 import { BoltRegisterService, EventType } from "./bolt-register.service";
 import { BoltService } from "./bolt.service";
 import { BOLT_ACTION_KEY } from "./decorators/bolt-action.decorator";
+import { BOLT_EVENT_KEY } from "./decorators/bolt-event.decorator";
+import { BOLT_VIEW_ACTION_KEY } from "./decorators/bolt-view-action.decorator";
+import { BOLT_VIEW_CLOSE_ACTION_KEY } from "./decorators/bolt-view-close-action.decorator";
 
 const discoveredActions = [
   {
@@ -34,6 +37,26 @@ const discoveredEvents = [
   },
 ];
 
+const discoveredViewActions = [
+  {
+    meta: "test view action 1",
+    discoveredMethod: {
+      parentClass: { instance: 666 },
+      methodName: "testmethod",
+    },
+  },
+];
+
+const discoveredViewCloseActions = [
+  {
+    meta: "test view close action 1",
+    discoveredMethod: {
+      parentClass: { instance: 9876 },
+      methodName: "testmethod",
+    },
+  },
+];
+
 describe("BoltRegisterService", () => {
   let bolt: App;
   let bind: jest.Mock;
@@ -46,8 +69,21 @@ describe("BoltRegisterService", () => {
         BoltRegisterService,
         createMockProvider(BoltService),
         createMockProvider(DiscoveryService, {
-          controllerMethodsWithMetaAtKey: (et: EventType) =>
-            et === BOLT_ACTION_KEY ? discoveredActions : discoveredEvents,
+          controllerMethodsWithMetaAtKey: (et: EventType) => {
+            if (et === BOLT_ACTION_KEY) {
+              return discoveredActions;
+            }
+            if (et === BOLT_EVENT_KEY) {
+              return discoveredEvents;
+            }
+            if (et === BOLT_VIEW_ACTION_KEY) {
+              return discoveredViewActions;
+            }
+            if (et === BOLT_VIEW_CLOSE_ACTION_KEY) {
+              return discoveredViewCloseActions;
+            }
+            return [];
+          },
         }),
         createMockProvider(ModuleRef, {
           get: () => ({ testmethod: { bind } }),
@@ -61,8 +97,8 @@ describe("BoltRegisterService", () => {
 
   it("Registers actions", async () => {
     expect(bolt.action).toHaveBeenCalledTimes(2);
-    expect(bolt.action).toHaveBeenCalledWith("test action 1", undefined);
-    expect(bolt.action).toHaveBeenCalledWith("test action 2", undefined);
+    expect(bolt.action).toHaveBeenCalledWith("test action 1", expect.any(Function));
+    expect(bolt.action).toHaveBeenCalledWith("test action 2", expect.any(Function));
   });
 
   it("Registers events", async () => {
@@ -70,10 +106,21 @@ describe("BoltRegisterService", () => {
     expect(bolt.event).toHaveBeenCalledWith("test event 1", undefined);
   });
 
+  it("Registers view actions", async () => {
+    expect(bolt.view).toHaveBeenCalledTimes(2);
+    expect(bolt.view).toHaveBeenCalledWith("test view action 1", expect.any(Function));
+    expect(bolt.view).toHaveBeenCalledWith(
+      { callback_id: "test view close action 1", type: "view_closed" },
+      expect.any(Function),
+    );
+  });
+
   it("Binds handler functions to correct context", async () => {
-    expect(bind).toHaveBeenCalledTimes(3);
+    expect(bind).toHaveBeenCalledTimes(5);
     expect(bind).toHaveBeenCalledWith(123);
     expect(bind).toHaveBeenCalledWith(456);
     expect(bind).toHaveBeenCalledWith(789);
+    expect(bind).toHaveBeenCalledWith(666);
+    expect(bind).toHaveBeenCalledWith(9876);
   });
 });

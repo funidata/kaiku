@@ -4,8 +4,14 @@ import { ModuleRef } from "@nestjs/core";
 import { BoltService } from "./bolt.service";
 import { BOLT_ACTION_KEY } from "./decorators/bolt-action.decorator";
 import { BOLT_EVENT_KEY } from "./decorators/bolt-event.decorator";
+import { BOLT_VIEW_ACTION_KEY } from "./decorators/bolt-view-action.decorator";
+import { BOLT_VIEW_CLOSE_ACTION_KEY } from "./decorators/bolt-view-close-action.decorator";
 
-export type EventType = typeof BOLT_ACTION_KEY | typeof BOLT_EVENT_KEY;
+export type EventType =
+  | typeof BOLT_ACTION_KEY
+  | typeof BOLT_EVENT_KEY
+  | typeof BOLT_VIEW_ACTION_KEY
+  | typeof BOLT_VIEW_CLOSE_ACTION_KEY;
 
 @Injectable()
 export class BoltRegisterService {
@@ -20,7 +26,12 @@ export class BoltRegisterService {
    * decorators.
    */
   async registerAllHandlers() {
-    const eventTypes = [BOLT_ACTION_KEY, BOLT_EVENT_KEY] as const;
+    const eventTypes = [
+      BOLT_ACTION_KEY,
+      BOLT_EVENT_KEY,
+      BOLT_VIEW_ACTION_KEY,
+      BOLT_VIEW_CLOSE_ACTION_KEY,
+    ] as const;
 
     await Promise.all(eventTypes.map((eventType) => this.registerHandlers(eventType)));
   }
@@ -53,6 +64,9 @@ export class BoltRegisterService {
 
   /**
    * Register handler function with Bolt API.
+   *
+   * Acknowledgements (or "acks") are sent automatically when an action is
+   * registered using this function.
    */
   private registerHandler(
     eventType: EventType,
@@ -63,9 +77,22 @@ export class BoltRegisterService {
     const bolt = this.boltService.getBolt();
 
     if (eventType === BOLT_ACTION_KEY) {
-      bolt.action(eventName, handler);
+      bolt.action(eventName, async (args) => {
+        await args.ack();
+        await handler(args);
+      });
     } else if (eventType === BOLT_EVENT_KEY) {
       bolt.event(eventName, handler);
+    } else if (eventType === BOLT_VIEW_ACTION_KEY) {
+      bolt.view(eventName, async (args) => {
+        await args.ack();
+        await handler(args);
+      });
+    } else if (eventType === BOLT_VIEW_CLOSE_ACTION_KEY) {
+      bolt.view({ callback_id: eventName, type: "view_closed" }, async (args) => {
+        await args.ack();
+        await handler(args);
+      });
     }
   }
 }

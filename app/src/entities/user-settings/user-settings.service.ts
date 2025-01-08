@@ -1,5 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { UserService } from "../user/user.service";
 import { UserSettings, UserSettingsRepository } from "./user-settings.model";
 
@@ -18,7 +19,7 @@ export class UserSettingsService {
    *
    * Update is partial so sparse `update` objects work well.
    */
-  async update(userId: string, update: Partial<Omit<UserSettings, "id">>) {
+  async update(userId: string, update: QueryDeepPartialEntity<UserSettings>) {
     this.logger.debug(`Update user settings: ${JSON.stringify(update)}`);
     const user = await this.userService.findPopulatedBySlackId(userId);
 
