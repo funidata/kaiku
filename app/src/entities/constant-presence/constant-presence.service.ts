@@ -2,7 +2,12 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import dayjs from "../../common/dayjs";
 import { ConstantPresence, ConstantPresenceRepository } from "./constant-presence.model";
+import { DateRange, daterangeTransformer } from "./daterange-transformer";
 import { CreateConstantPresence } from "./dto/create-constant-presence.dto";
+
+type ConstantPresenceFilter = {
+  userId?: string;
+};
 
 @Injectable()
 export class ConstantPresenceService {
@@ -20,6 +25,29 @@ export class ConstantPresenceService {
       .andWhere("in_effect @> NOW()::date")
       .getRawAndEntities();
 
+    return res.entities;
+  }
+
+  /**
+   * Find constant presences overlapping given date range and satisfying
+   * optional filters.
+   *
+   * Overlap is defined as a non-empty union of two date ranges.
+   */
+  async findByDateRange(
+    range: DateRange,
+    filters?: ConstantPresenceFilter | undefined,
+  ): Promise<ConstantPresence[]> {
+    const query = this.constantPresenceRepository
+      .createQueryBuilder("cp")
+      .select()
+      .where("in_effect && :range", { range: daterangeTransformer.to(range) });
+
+    if (filters?.userId) {
+      query.andWhere("user_slack_id = :userId", { userId: filters.userId });
+    }
+
+    const res = await query.getRawAndEntities();
     return res.entities;
   }
 
