@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import { Actions, Button, Header, Option, OverflowMenu, StaticSelect } from "slack-block-builder";
 import Action from "../../../../bolt/enums/action.enum";
 import { Office } from "../../../../entities/office/office.model";
@@ -8,18 +8,13 @@ import { Presence } from "../../../../entities/presence/presence.model";
 type DayListItemProps = {
   date: Dayjs;
   offices: Office[];
-  presences: Presence[];
+  presence: Presence | undefined;
 };
 
 @Injectable()
 export class DayListItem {
-  build(props: DayListItemProps) {
-    const { date } = props;
+  build({ date, offices, presence }: DayListItemProps) {
     const dateString = date.toISOString();
-
-    const currentPresence: Presence | undefined = props.presences.find((presence) =>
-      date.isSame(dayjs(presence.date), "date"),
-    );
 
     return [
       Header({ text: date.format("dd D.M.") }),
@@ -28,13 +23,13 @@ export class DayListItem {
           text: "Toimistolla",
           actionId: Action.SET_OFFICE_PRESENCE,
           value: dateString,
-        }).primary(currentPresence?.remote === false),
+        }).primary(presence?.remote === false),
         Button({
           text: "Etänä",
           actionId: Action.SET_REMOTE_PRESENCE,
           value: dateString,
-        }).primary(currentPresence?.remote === true),
-        this.getOfficeBlocks(props),
+        }).primary(presence?.remote === true),
+        this.getOfficeBlocks(date, offices),
         OverflowMenu({ actionId: Action.DAY_LIST_ITEM_OVERFLOW }).options(
           Option({
             text: "Poista ilmoittautuminen",
@@ -48,7 +43,7 @@ export class DayListItem {
     ];
   }
 
-  private getOfficeBlocks({ date, offices }: DayListItemProps) {
+  private getOfficeBlocks(date: Dayjs, offices: Office[]) {
     // Don't show office select at all if no offices exist.
     if (offices.length === 0) {
       return null;
