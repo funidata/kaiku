@@ -11,6 +11,7 @@ type ConstantPresenceFilter = {
   userId?: string;
   userGroupHandle?: string;
   remote?: boolean;
+  officeId?: string;
 };
 
 @Injectable()
@@ -59,6 +60,11 @@ export class ConstantPresenceService {
 
     if (filters?.remote !== undefined) {
       query.andWhere("remote = :remote", { remote: filters?.remote });
+    }
+
+    if (filters?.officeId) {
+      query.andWhere("remote = FALSE");
+      query.andWhere("office_id = :officeId", { officeId: filters.officeId });
     }
 
     const res = await query.getRawAndEntities();
