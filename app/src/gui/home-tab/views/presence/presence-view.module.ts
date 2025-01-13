@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { ConstantPresenceModule } from "../../../../entities/constant-presence/constant-presence.module";
 import { OfficeModule } from "../../../../entities/office/office.module";
 import { PresenceModule } from "../../../../entities/presence/presence.module";
 import { UserSettingsModule } from "../../../../entities/user-settings/user-settings.module";
@@ -9,7 +10,7 @@ import { PresenceView } from "./presence.view";
 import { UserGroupFilter } from "./user-group-filter";
 
 @Module({
-  imports: [OfficeModule, PresenceModule, UserSettingsModule],
+  imports: [OfficeModule, PresenceModule, UserSettingsModule, ConstantPresenceModule],
   providers: [PresenceView, OfficeFilter, DateFilter, UserGroupFilter, PresenceList],
   exports: [PresenceView],
 })

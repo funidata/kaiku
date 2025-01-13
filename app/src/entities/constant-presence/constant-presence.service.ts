@@ -47,6 +47,8 @@ export class ConstantPresenceService {
     const query = this.constantPresenceRepository
       .createQueryBuilder("cp")
       .select()
+      .leftJoinAndSelect("cp.office", "office")
+      .leftJoinAndSelect("cp.user", "user")
       .where("in_effect && :range", { range: daterangeTransformer.to(range) });
 
     if (filters?.userId) {
