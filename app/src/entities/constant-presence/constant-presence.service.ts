@@ -1,12 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { BoltService } from "../../bolt/bolt.service";
 import dayjs from "../../common/dayjs";
+import { UserGroupNotFoundException } from "../../common/exceptions/user-group-not-found.exception";
 import { ConstantPresence, ConstantPresenceRepository } from "./constant-presence.model";
 import { DateRange, daterangeTransformer } from "./daterange-transformer";
 import { CreateConstantPresence } from "./dto/create-constant-presence.dto";
 
 type ConstantPresenceFilter = {
   userId?: string;
+  userGroupHandle?: string;
 };
 
 @Injectable()
@@ -14,6 +17,7 @@ export class ConstantPresenceService {
   constructor(
     @InjectRepository(ConstantPresence)
     private constantPresenceRepository: ConstantPresenceRepository,
+    private boltService: BoltService,
   ) {}
 
   async findEffectiveByUserId(userId: string): Promise<ConstantPresence[]> {
@@ -45,6 +49,11 @@ export class ConstantPresenceService {
 
     if (filters?.userId) {
       query.andWhere("user_slack_id = :userId", { userId: filters.userId });
+    }
+
+    if (filters?.userGroupHandle) {
+      const userIds = await this.getUserGroupUsers(filters.userGroupHandle);
+      query.andWhere("user_slack_id IN (:...userIds)", { userIds });
     }
 
     const res = await query.getRawAndEntities();
@@ -92,5 +101,16 @@ export class ConstantPresenceService {
       .andWhere("day_of_week = :dayOfWeek", { dayOfWeek })
       .andWhere("in_effect @> NOW()::date")
       .execute();
+  }
+
+  private async getUserGroupUsers(userGroupHandle: string): Promise<string[]> {
+    const userGroups = await this.boltService.getUserGroups();
+    const userGroup = userGroups.find((group) => group.handle === userGroupHandle);
+
+    if (!userGroup) {
+      throw new UserGroupNotFoundException();
+    }
+
+    return userGroup.users;
   }
 }
