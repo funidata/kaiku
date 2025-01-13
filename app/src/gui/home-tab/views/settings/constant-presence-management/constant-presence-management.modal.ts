@@ -83,23 +83,23 @@ export class ConstantPresenceManagementModal {
   }
 
   private getInitialOption(
-    existingPresence: ConstantPresence,
+    existingSelection: ConstantPresence,
     options: OptionBuilder[],
   ): OptionBuilder | undefined {
-    if (!existingPresence) {
+    if (!existingSelection) {
       return undefined;
     }
 
-    if (existingPresence.remote) {
+    if (existingSelection.remote) {
       return Option({ text: "Etänä", value: "REMOTE" });
     }
 
-    const initialOption = existingPresence.office
-      ? Option({ text: existingPresence.office.name, value: existingPresence.office.id })
+    const initialOption = existingSelection.office
+      ? Option({ text: existingSelection.office.name, value: existingSelection.office.id })
       : Option({ text: "Toimistolla", value: "OFFICE" });
 
     // Ensure the created option exists to avoid Bolt errors.
-    if (!options.find((opt) => opt.value === initialOption.value)) {
+    if (!options.find((opt) => opt["props"].value === initialOption["props"].value)) {
       return undefined;
     }
 
