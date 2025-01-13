@@ -10,6 +10,7 @@ import { CreateConstantPresence } from "./dto/create-constant-presence.dto";
 type ConstantPresenceFilter = {
   userId?: string;
   userGroupHandle?: string;
+  remote?: boolean;
 };
 
 @Injectable()
@@ -54,6 +55,10 @@ export class ConstantPresenceService {
     if (filters?.userGroupHandle) {
       const userIds = await this.getUserGroupUsers(filters.userGroupHandle);
       query.andWhere("user_slack_id IN (:...userIds)", { userIds });
+    }
+
+    if (filters?.remote !== undefined) {
+      query.andWhere("remote = :remote", { remote: filters?.remote });
     }
 
     const res = await query.getRawAndEntities();
