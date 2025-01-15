@@ -1,25 +1,23 @@
 import { Injectable } from "@nestjs/common";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import { Actions, Button, Header, Option, OverflowMenu, StaticSelect } from "slack-block-builder";
 import Action from "../../../../bolt/enums/action.enum";
+import { ConstantPresence } from "../../../../entities/constant-presence/constant-presence.model";
 import { Office } from "../../../../entities/office/office.model";
 import { Presence } from "../../../../entities/presence/presence.model";
 
 type DayListItemProps = {
   date: Dayjs;
   offices: Office[];
-  presences: Presence[];
+  presence: Presence | undefined;
+  constantPresence: ConstantPresence | undefined;
 };
 
 @Injectable()
 export class DayListItem {
-  build(props: DayListItemProps) {
-    const { date } = props;
+  build({ date, offices, presence, constantPresence }: DayListItemProps) {
     const dateString = date.toISOString();
-
-    const currentPresence: Presence | undefined = props.presences.find((presence) =>
-      date.isSame(dayjs(presence.date), "date"),
-    );
+    const effectivePresence = this.workOutEffectivePresence(presence, constantPresence);
 
     return [
       Header({ text: date.format("dd D.M.") }),
@@ -28,13 +26,13 @@ export class DayListItem {
           text: "Toimistolla",
           actionId: Action.SET_OFFICE_PRESENCE,
           value: dateString,
-        }).primary(currentPresence?.remote === false),
+        }).primary(effectivePresence?.remote === false),
         Button({
           text: "Etänä",
           actionId: Action.SET_REMOTE_PRESENCE,
           value: dateString,
-        }).primary(currentPresence?.remote === true),
-        this.getOfficeBlocks(props),
+        }).primary(effectivePresence?.remote === true),
+        this.getOfficeBlocks(date, offices),
         OverflowMenu({ actionId: Action.DAY_LIST_ITEM_OVERFLOW }).options(
           Option({
             text: "Poista ilmoittautuminen",
@@ -48,7 +46,7 @@ export class DayListItem {
     ];
   }
 
-  private getOfficeBlocks({ date, offices }: DayListItemProps) {
+  private getOfficeBlocks(date: Dayjs, offices: Office[]) {
     // Don't show office select at all if no offices exist.
     if (offices.length === 0) {
       return null;
@@ -67,5 +65,28 @@ export class DayListItem {
     })
       .initialOption(Options[0])
       .options(Options);
+  }
+
+  /**
+   * Work out effective presence to show from manual registration and constant
+   * presence, both of which are optional.
+   */
+  private workOutEffectivePresence(
+    manual?: Presence,
+    constant?: ConstantPresence,
+  ):
+    | {
+        // This is simple now but the point is to support offices later on...
+        remote: boolean;
+      }
+    | undefined {
+    let remote: boolean | undefined = constant?.remote;
+    remote = manual ? manual.remote : remote;
+
+    if (remote !== undefined) {
+      return { remote };
+    }
+
+    return undefined;
   }
 }
