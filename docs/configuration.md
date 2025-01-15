@@ -12,6 +12,7 @@ Kaiku is configured using environment variables.
 | `DATABASE_USERNAME`    |    ✅    | Postgres username.                                                                                                                   |
 | `DATABASE_PASSWORD`    |    ✅    | Postgres password.                                                                                                                   |
 | `DATABASE_SSL_ENABLED` |          | Use SSL to connect to the Postgres server if set to `"true"`. Disabled by default.                                                   |
+| `DATABASE_SSL_MODE`    |          | When set to `true`, TypeORM is configured to use SSL mode `no-verify` when connecting to Postgres. Otherwise, SSL is disabled.       |
 | `SLACK_APP_TOKEN`      |    ✅    | App-level token from Slack to authenticate the WebSocket connection.                                                                 |
 | `SLACK_BOT_TOKEN`      |    ✅    | OAuth token for Kaiku's bot user.                                                                                                    |
 | `SLACK_SIGNING_SECRET` |    ✅    | Slack signing secret.                                                                                                                |
