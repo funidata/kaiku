@@ -1,0 +1,25 @@
+# Slack App Manifest
+# See https://api.slack.com/concepts/manifests
+display_information:
+  name: Kaiku
+  description: Hybridityöskentelyn tukisovellus
+features:
+  app_home:
+    home_tab_enabled: true
+    messages_tab_enabled: false
+  bot_user:
+    display_name: kaiku
+    always_online: true
+oauth_config:
+  scopes:
+    bot:
+      - usergroups:read
+      - users:read
+settings:
+  event_subscriptions:
+    bot_events:
+      - app_home_opened
+      - user_profile_changed
+  interactivity:
+    is_enabled: true
+  socket_mode_enabled: true
