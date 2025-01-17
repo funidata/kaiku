@@ -1,5 +1,5 @@
 import { DiscoveredMethod, DiscoveryService } from "@golevelup/nestjs-discovery";
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { ModuleRef } from "@nestjs/core";
 import { BoltService } from "./bolt.service";
 import { BOLT_ACTION_KEY } from "./decorators/bolt-action.decorator";
@@ -15,6 +15,8 @@ export type EventType =
 
 @Injectable()
 export class BoltRegisterService {
+  private logger = new Logger(BoltRegisterService.name);
+
   constructor(
     private boltService: BoltService,
     private discoveryService: DiscoveryService,
@@ -40,7 +42,8 @@ export class BoltRegisterService {
    * Register all handler functions of certain `EventType`.
    */
   private async registerHandlers(eventType: EventType) {
-    const controllers = await this.discoveryService.controllerMethodsWithMetaAtKey(eventType);
+    const controllers =
+      await this.discoveryService.controllerMethodsWithMetaAtKey<string>(eventType);
 
     controllers.forEach((controller) => {
       const { meta, discoveredMethod } = controller;
@@ -55,6 +58,11 @@ export class BoltRegisterService {
    * Get handler function via `ModuleRef` and bind it to correct context.
    */
   private getHandler(discoveredMethod: DiscoveredMethod) {
+    if (discoveredMethod.parentClass.injectType === undefined) {
+      this.logger.error("Discovered method cannot be registered due to missing `injectType`.");
+      throw new InternalServerErrorException();
+    }
+
     const cref = this.moduleRef.get(discoveredMethod.parentClass.injectType, {
       strict: false,
     });
