@@ -54,7 +54,7 @@ export class PresenceView {
     const remote = settings.officeFilter === "REMOTE";
     const officeId = !["REMOTE", "ALL_OFFICES"].includes(settings.officeFilter)
       ? settings.officeFilter
-      : null;
+      : undefined;
 
     const precenses = await this.presenceService.findByFilter({
       startDate,

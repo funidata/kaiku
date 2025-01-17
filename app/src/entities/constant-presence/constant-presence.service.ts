@@ -120,7 +120,7 @@ export class ConstantPresenceService {
     const userGroups = await this.boltService.getUserGroups();
     const userGroup = userGroups.find((group) => group.handle === userGroupHandle);
 
-    if (!userGroup) {
+    if (!userGroup || !userGroup.users) {
       throw new UserGroupNotFoundException();
     }
 

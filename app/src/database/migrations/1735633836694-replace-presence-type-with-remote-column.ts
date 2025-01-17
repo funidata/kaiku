@@ -8,6 +8,9 @@ export class ReplacePresenceTypeWithRemoteColumn1735633836694 implements Migrati
      * sometimes incorrect, will not break anything.
      */
     const table = await queryRunner.getTable("presence");
+    if (!table) {
+      throw new Error("Table not found during migration run.");
+    }
 
     await queryRunner.dropColumn(table, "type");
 

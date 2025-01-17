@@ -14,14 +14,14 @@ const discoveredActions = [
   {
     meta: "test action 1",
     discoveredMethod: {
-      parentClass: { instance: 123 },
+      parentClass: { instance: 123, injectType: () => {} },
       methodName: "testmethod",
     },
   },
   {
     meta: "test action 2",
     discoveredMethod: {
-      parentClass: { instance: 456 },
+      parentClass: { instance: 456, injectType: () => {} },
       methodName: "testmethod",
     },
   },
@@ -31,7 +31,7 @@ const discoveredEvents = [
   {
     meta: "test event 1",
     discoveredMethod: {
-      parentClass: { instance: 789 },
+      parentClass: { instance: 789, injectType: () => {} },
       methodName: "testmethod",
     },
   },
@@ -41,7 +41,7 @@ const discoveredViewActions = [
   {
     meta: "test view action 1",
     discoveredMethod: {
-      parentClass: { instance: 666 },
+      parentClass: { instance: 666, injectType: () => {} },
       methodName: "testmethod",
     },
   },
@@ -51,7 +51,7 @@ const discoveredViewCloseActions = [
   {
     meta: "test view close action 1",
     discoveredMethod: {
-      parentClass: { instance: 9876 },
+      parentClass: { instance: 9876, injectType: () => {} },
       methodName: "testmethod",
     },
   },

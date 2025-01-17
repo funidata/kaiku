@@ -3,6 +3,9 @@ import { MigrationInterface, QueryRunner, TableColumn, TableForeignKey } from "t
 export class AddHomeOfficeColumnToUserSettings1735539215842 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const table = await queryRunner.getTable("user_settings");
+    if (!table) {
+      throw new Error("Table not found during migration run.");
+    }
 
     await queryRunner.addColumn(
       table,

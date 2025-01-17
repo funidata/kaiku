@@ -49,7 +49,7 @@ export class DayListItem {
   private getOfficeBlocks(date: Dayjs, offices: Office[]) {
     // Don't show office select at all if no offices exist.
     if (offices.length === 0) {
-      return null;
+      return undefined;
     }
 
     const Options = offices.map(({ id, name }) =>

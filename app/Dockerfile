@@ -1,5 +1,5 @@
 # Production image.
-FROM node:20.17 AS build
+FROM node:22.13 AS build
 
 ENV NODE_ENV=production
 
@@ -12,7 +12,7 @@ RUN npm run build
 RUN npm prune
 
 # Final build stage to pick only actually needed files into the image.
-FROM node:20.17-alpine
+FROM node:22.13-alpine
 
 USER node
 

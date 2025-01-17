@@ -10,8 +10,8 @@ export class SettingsViewController {
   constructor(private userSettingsService: UserSettingsService) {}
 
   @BoltAction(Action.SET_HOME_OFFICE)
-  async setHomeOffice({ payload, context }: BoltActionArgs) {
+  async setHomeOffice({ payload, body }: BoltActionArgs) {
     const officeId = get(payload, "selected_option.value");
-    await this.userSettingsService.update(context.userId, { homeOffice: { id: officeId } });
+    await this.userSettingsService.update(body.user.id, { homeOffice: { id: officeId } });
   }
 }

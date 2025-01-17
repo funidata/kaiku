@@ -1,13 +1,13 @@
 import { Controller, Logger } from "@nestjs/common";
-import { AllMiddlewareArgs, StringIndexed } from "@slack/bolt";
+import { SlackEventMiddlewareArgs } from "@slack/bolt";
 import { Actions, Button, Header, HomeTab, Section } from "slack-block-builder";
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
+import { BoltService } from "../../bolt/bolt.service";
 import BoltAction from "../../bolt/decorators/bolt-action.decorator";
 import BoltEvent from "../../bolt/decorators/bolt-event.decorator";
 import Action from "../../bolt/enums/action.enum";
 import Event from "../../bolt/enums/event.enum";
 import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
-import { WebClient } from "../../bolt/types/web-client.type";
 import { UserSettingsService } from "../../entities/user-settings/user-settings.service";
 import { UserService } from "../../entities/user/user.service";
 import { HomeTabService } from "./home-tab.service";
@@ -32,16 +32,17 @@ export class HomeTabController {
     private settingsView: SettingsView,
     private userSettingsService: UserSettingsService,
     private userService: UserService,
+    private boltService: BoltService,
   ) {}
 
   @BoltEvent(Event.APP_HOME_OPENED)
-  async getView({ client, context }: AllMiddlewareArgs<StringIndexed>) {
+  async getView({ body }: SlackEventMiddlewareArgs<"app_home_opened">) {
     this.logger.debug(Event.APP_HOME_OPENED);
 
-    const { userId } = context;
+    const userId = body.event.user;
 
     if (!(await this.userService.findPopulatedBySlackId(userId))) {
-      return this.showUserNotFoundView(userId, client);
+      return this.showUserNotFoundView(userId);
     }
 
     const { selectedView } = await this.userSettingsService.findForUser(userId);
@@ -55,14 +56,14 @@ export class HomeTabController {
       content = await this.registrationView.build(userId);
     }
 
-    await this.homeTabService.publish({ client, content, userId });
+    await this.homeTabService.publish({ content, userId });
   }
 
   @BoltAction(Action.OPEN_PRESENCE_VIEW)
   async openPresenceView(actionArgs: BoltActionArgs) {
     await this.openView({
       actionArgs,
-      contentFactory: async () => this.presenceView.build(actionArgs.context.userId),
+      contentFactory: async () => this.presenceView.build(actionArgs.body.user.id),
       name: "presence",
     });
   }
@@ -71,7 +72,7 @@ export class HomeTabController {
   async openRegistrationView(actionArgs: BoltActionArgs) {
     await this.openView({
       actionArgs,
-      contentFactory: async () => this.registrationView.build(actionArgs.context.userId),
+      contentFactory: async () => this.registrationView.build(actionArgs.body.user.id),
       name: "registration",
     });
   }
@@ -80,7 +81,7 @@ export class HomeTabController {
   async openSettingsView(actionArgs: BoltActionArgs) {
     await this.openView({
       actionArgs,
-      contentFactory: async () => this.settingsView.build(actionArgs.context.userId),
+      contentFactory: async () => this.settingsView.build(actionArgs.body.user.id),
       name: "settings",
     });
   }
@@ -92,14 +93,14 @@ export class HomeTabController {
       `SET_OFFICE_FILTER_VALUE received selected option: ${actionArgs.payload["selected_option"]?.value}`,
     );
     this.logger.debug(`Update office filter value to ${officeFilter}`);
-    await this.userSettingsService.update(actionArgs.context.userId, { officeFilter });
+    await this.userSettingsService.update(actionArgs.body.user.id, { officeFilter });
     await this.openPresenceView(actionArgs);
   }
 
   @BoltAction(Action.SET_DATE_FILTER_VALUE)
   async setDateFilterValue(actionArgs: BoltActionArgs) {
     const dateFilter = actionArgs.payload["selected_date"];
-    await this.userSettingsService.update(actionArgs.context.userId, { dateFilter });
+    await this.userSettingsService.update(actionArgs.body.user.id, { dateFilter });
     await this.openPresenceView(actionArgs);
   }
 
@@ -107,7 +108,7 @@ export class HomeTabController {
   async setUserGroupFilterValue(actionArgs: BoltActionArgs) {
     const receivedValue = actionArgs.payload["selected_option"]?.value;
     const userGroupFilter = !receivedValue || receivedValue == "ALL_GROUPS" ? null : receivedValue;
-    await this.userSettingsService.update(actionArgs.context.userId, { userGroupFilter });
+    await this.userSettingsService.update(actionArgs.body.user.id, { userGroupFilter });
     await this.openPresenceView(actionArgs);
   }
 
@@ -118,12 +119,14 @@ export class HomeTabController {
    * we take a content factory instead of prebuild content as an argument.
    */
   private async openView({ actionArgs, contentFactory, name }: ViewProps) {
-    await this.userSettingsService.update(actionArgs.context.userId, { selectedView: name });
+    await this.userSettingsService.update(actionArgs.body.user.id, { selectedView: name });
     const content = await contentFactory();
     this.homeTabService.update(actionArgs, content);
   }
 
-  private async showUserNotFoundView(userId: string, client: WebClient) {
+  private async showUserNotFoundView(userId: string) {
+    const { client } = this.boltService.getBolt();
+
     await client.views.publish({
       user_id: userId,
       view: HomeTab()

@@ -1,5 +1,5 @@
-import { Controller, InternalServerErrorException } from "@nestjs/common";
-import { get, range } from "lodash";
+import { Controller, InternalServerErrorException, Logger } from "@nestjs/common";
+import { get, isObject, range } from "lodash";
 import BoltAction from "../../../../../bolt/decorators/bolt-action.decorator";
 import BoltViewAction from "../../../../../bolt/decorators/bolt-view-action.decorator";
 import Action from "../../../../../bolt/enums/action.enum";
@@ -12,6 +12,8 @@ import { ConstantPresenceManagementModal } from "./constant-presence-management.
 
 @Controller()
 export class ConstantPresenceManagementController {
+  private logger = new Logger(ConstantPresenceManagementController.name);
+
   constructor(
     private modal: ConstantPresenceManagementModal,
     private cpService: ConstantPresenceService,
@@ -29,6 +31,11 @@ export class ConstantPresenceManagementController {
   async deleteConstantPresence({ payload, body, client }: BoltActionArgs) {
     const dayOfWeek = Number(get(payload, "value"));
     await this.cpService.closeEffectiveCpsByUserIdAndDayOfWeek(body.user.id, dayOfWeek);
+
+    if (!body.view?.root_view_id) {
+      this.logger.error("Payload did not include root view ID.");
+      throw new InternalServerErrorException();
+    }
 
     client.views.update({
       view_id: body.view.root_view_id,
@@ -50,7 +57,7 @@ export class ConstantPresenceManagementController {
     if (["REMOTE", "OFFICE"].includes(value)) {
       return {
         remote: value === "REMOTE",
-        officeId: null,
+        officeId: undefined,
       };
     }
 
@@ -82,6 +89,9 @@ export class ConstantPresenceManagementController {
    * the current Bolt implementation.
    */
   private getSelectedValue(stateValue: unknown): string | undefined {
+    if (!isObject(stateValue)) {
+      return undefined;
+    }
     const randomKey = Object.keys(stateValue)[0];
     return get(stateValue, `${randomKey}.selected_option.value`);
   }

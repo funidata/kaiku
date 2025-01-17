@@ -4,7 +4,6 @@ import { App, LogLevel } from "@slack/bolt";
 import { Cache } from "cache-manager";
 import { ConfigService } from "../common/config/config.service";
 import { BoltLogger } from "./bolt-logger";
-import { UserGroup } from "./types/user-group.type";
 
 @Injectable()
 export class BoltService {
@@ -43,7 +42,7 @@ export class BoltService {
   /**
    * Get user groups from Slack (cached).
    */
-  async getUserGroups(): Promise<UserGroup[]> {
+  async getUserGroups() {
     return this.cache.wrap(
       "userGroups",
       async () => {

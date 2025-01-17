@@ -83,7 +83,7 @@ export class ConstantPresenceManagementModal {
   }
 
   private getInitialOption(
-    existingSelection: ConstantPresence,
+    existingSelection: ConstantPresence | undefined,
     options: OptionBuilder[],
   ): OptionBuilder | undefined {
     if (!existingSelection) {
