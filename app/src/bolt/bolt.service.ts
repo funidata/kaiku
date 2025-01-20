@@ -2,7 +2,7 @@ import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { App, LogLevel } from "@slack/bolt";
 import { Cache } from "cache-manager";
-import { CacheKeys } from "../common/cache-keys.enum";
+import { CacheKey } from "../common/cache-key.enum";
 import { ConfigService } from "../common/config/config.service";
 import { BoltLogger } from "./bolt-logger";
 
@@ -45,7 +45,7 @@ export class BoltService {
    */
   async getUserGroups() {
     return this.cache.wrap(
-      CacheKeys.USER_GROUPS,
+      CacheKey.USER_GROUPS,
       async () => {
         const res = await this.bolt.client.usergroups.list({ include_users: true });
         return res.usergroups || [];
