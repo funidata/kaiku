@@ -3,7 +3,6 @@ import { Actions, Button, Header, Input, Option, Section, StaticSelect } from "s
 import { Appendable, ViewBlockBuilder } from "slack-block-builder/dist/internal";
 import { AuthorizationService } from "../../../../authorization/authorization.service";
 import Action from "../../../../bolt/enums/action.enum";
-import { Office } from "../../../../entities/office/office.model";
 import { OfficeService } from "../../../../entities/office/office.service";
 import { UserSettings } from "../../../../entities/user-settings/user-settings.model";
 import { UserSettingsService } from "../../../../entities/user-settings/user-settings.service";
@@ -17,7 +16,6 @@ export class SettingsView {
   ) {}
 
   async build(userId: string): Promise<Appendable<ViewBlockBuilder>> {
-    const offices = await this.officeService.findAll();
     const settings = await this.userSettingsService.findForUser(userId);
 
     const officeMgmtButton = (await this.authService.userIsOwner(userId))
@@ -28,7 +26,7 @@ export class SettingsView {
 
     return [
       Header({ text: "Asetukset" }),
-      this.getHomeOfficeSelect(offices, settings),
+      await this.getHomeOfficeSelect(settings),
       Actions().elements(
         Button({
           text: "Vakioilmoittautumiset",
@@ -39,7 +37,8 @@ export class SettingsView {
     ];
   }
 
-  private getHomeOfficeSelect(offices: Office[], settings: UserSettings) {
+  private async getHomeOfficeSelect(settings: UserSettings) {
+    const offices = await this.officeService.findAll();
     if (!offices.length) {
       return Section({
         text: "_Kotitoimiston valinta ei ole käytössä, koska Kaikuun ei ole vielä lisätty toimistoja._",
