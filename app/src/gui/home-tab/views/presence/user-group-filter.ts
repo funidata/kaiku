@@ -8,8 +8,7 @@ export class UserGroupFilter {
   constructor(private boltService: BoltService) {}
 
   async build(selectedValue?: string) {
-    const userGroupRes = await this.boltService.getBolt().client.usergroups.list();
-    const userGroups = userGroupRes.usergroups || [];
+    const userGroups = await this.boltService.getUserGroups();
 
     const options = userGroups
       .toSorted((a, b) => (a.name || "").localeCompare(b.name || "", "fi", { sensitivity: "base" }))
