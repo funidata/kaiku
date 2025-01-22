@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { OfficeNotFoundException } from "../../common/exceptions/office-not-found.exception";
 import { Office, OfficeRepository } from "./office.model";
 
 @Injectable()
@@ -11,7 +12,11 @@ export class OfficeService {
   }
 
   async findById(id: string) {
-    return this.officeRepository.findOneBy({ id });
+    const office = await this.officeRepository.findOneBy({ id });
+    if (!office) {
+      throw new OfficeNotFoundException();
+    }
+    return office;
   }
 
   async create(name: string) {

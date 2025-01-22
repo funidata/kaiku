@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { UserNotFoundException } from "../../common/exceptions/user-not-found.exception";
 import { UpdateBasicInfoDto } from "./dto/user.dto";
 import { User, UserRepository } from "./user.model";
 
@@ -12,10 +13,16 @@ export class UserService {
   }
 
   async findPopulatedBySlackId(slackId: string): Promise<User> {
-    return this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { slackId },
       relations: { settings: true },
     });
+
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    return user;
   }
 
   /**

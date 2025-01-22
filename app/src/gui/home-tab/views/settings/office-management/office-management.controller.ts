@@ -42,7 +42,6 @@ export class OfficeManagementController {
   async closeOfficeManagementModal(actionArgs: BoltActionArgs) {
     await this.homeTabService.publish({
       userId: actionArgs.body.user.id,
-      client: actionArgs.client,
       content: await this.settingsView.build(actionArgs.body.user.id),
     });
   }
@@ -57,7 +56,7 @@ export class OfficeManagementController {
 
   @BoltAction(Action.OPEN_EDIT_OFFICE_MODAL)
   async openEditOfficeModal(actionArgs: BoltActionArgs) {
-    const officeId = get(actionArgs, "payload.value");
+    const officeId = get(actionArgs, "payload.value", "");
     const office = await this.officeService.findById(officeId);
 
     await actionArgs.client.views.push({
@@ -74,6 +73,10 @@ export class OfficeManagementController {
 
     if (!officeName) {
       this.logger.error("Could not read office name from view submission payload.");
+      throw new InternalServerErrorException();
+    }
+    if (!view.root_view_id) {
+      this.logger.error("Payload did not include root view ID.");
       throw new InternalServerErrorException();
     }
 
@@ -100,6 +103,10 @@ export class OfficeManagementController {
       this.logger.error("Could not read office name from view submission payload.");
       throw new InternalServerErrorException();
     }
+    if (!view.root_view_id) {
+      this.logger.error("Payload did not include root view ID.");
+      throw new InternalServerErrorException();
+    }
 
     await this.officeService.update(officeId, officeName);
 
@@ -114,6 +121,15 @@ export class OfficeManagementController {
     await this.authService.requireOwnerRole(body.user.id);
 
     const officeId = get(payload, "value");
+    if (!officeId) {
+      this.logger.error("Could not read office ID from action payload.");
+      throw new InternalServerErrorException();
+    }
+    if (!body.view?.root_view_id) {
+      this.logger.error("Payload did not include root view ID.");
+      throw new InternalServerErrorException();
+    }
+
     await this.officeService.delete(officeId);
 
     client.views.update({

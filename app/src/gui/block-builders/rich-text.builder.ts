@@ -20,7 +20,7 @@ export const RichText = () => new RichTextBuilder() as unknown as IRichTextBuild
  * methods.
  */
 export class RichTextBuilder {
-  private elementList = [];
+  private elementList: unknown[] = [];
 
   constructor() {
     return this;

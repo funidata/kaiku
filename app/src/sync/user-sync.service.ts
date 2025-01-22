@@ -1,9 +1,9 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { UsersListResponse } from "@slack/web-api";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { SlackEventMiddlewareArgs } from "@slack/bolt";
 import { BoltUserService } from "../bolt/bolt-user.service";
 import { UserService } from "../entities/user/user.service";
 
-type SlackMember = UsersListResponse["members"][0];
+type Member = SlackEventMiddlewareArgs<"user_profile_changed">["event"]["user"];
 
 @Injectable()
 export class UserSyncService {
@@ -20,22 +20,26 @@ export class UserSyncService {
    * By default, all users are synchronized. Optionally, a single user may be
    * updated by passing their data as `updateOverride` argument.
    */
-  async syncUsers(updateOverride?: SlackMember) {
+  async syncUsers(updateOverride?: Member) {
     if (updateOverride) {
       this.logger.log(`Starting user data synchronization for user ${updateOverride.id}.`);
     } else {
       this.logger.log("Starting user data synchronization for all users.");
     }
 
-    const slackUsers = updateOverride ? [updateOverride] : await this.boltUserService.getUsers();
+    const usersToUpdate = updateOverride ? [updateOverride] : await this.boltUserService.getUsers();
+    if (!usersToUpdate) {
+      this.logger.error("Received an undefined value as user update.");
+      throw new InternalServerErrorException();
+    }
 
-    const users = slackUsers.filter(this.appUserFilter).map((user) => ({
-      slackId: user.id,
-      displayName: user.profile.display_name || "",
-      realName: user.profile.real_name || "",
+    const allowedUsers = usersToUpdate.filter(this.appUserFilter).map((user) => ({
+      slackId: user.id || "",
+      displayName: user.profile?.display_name || "",
+      realName: user.profile?.real_name || "",
     }));
 
-    await Promise.all(users.map((user) => this.userService.updateBasicInfoOrCreate(user)));
+    await Promise.all(allowedUsers.map((user) => this.userService.updateBasicInfoOrCreate(user)));
 
     this.logger.log("User data synchronized.");
   }
@@ -43,7 +47,7 @@ export class UserSyncService {
   /**
    * Filter out bots, restricted and deleted users, leaving only real app users.
    */
-  private appUserFilter(user: SlackMember) {
+  private appUserFilter(user: Member) {
     return (
       user.id !== "USLACKBOT" &&
       !user.is_bot &&

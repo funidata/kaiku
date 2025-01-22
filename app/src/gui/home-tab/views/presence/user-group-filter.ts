@@ -12,7 +12,7 @@ export class UserGroupFilter {
     const userGroups = userGroupRes.usergroups || [];
 
     const options = userGroups
-      .toSorted((a, b) => a.name.localeCompare(b.name, "fi", { sensitivity: "base" }))
+      .toSorted((a, b) => (a.name || "").localeCompare(b.name || "", "fi", { sensitivity: "base" }))
       .map((ug) => ({
         text: ug.name,
         value: ug.handle,
