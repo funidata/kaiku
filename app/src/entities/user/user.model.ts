@@ -13,7 +13,7 @@ export class User {
   realName: string;
 
   @OneToOne(() => UserSettings, { cascade: true, eager: true })
-  @JoinColumn()
+  @JoinColumn({ name: "settings_id" })
   settings: UserSettings;
 }
 
