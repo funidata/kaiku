@@ -12,7 +12,7 @@ export class ChangeVisibleOfficeToOfficeFilter1729339277187 implements Migration
 
     await queryRunner.addColumn(
       table,
-      new TableColumn({ name: "officer_filter", type: "text", default: "'ALL_OFFICES'::text" }),
+      new TableColumn({ name: "office_filter", type: "text", default: "'ALL_OFFICES'::text" }),
     );
   }
 

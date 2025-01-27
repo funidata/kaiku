@@ -20,13 +20,13 @@ export class CreateUserTable1726034817829 implements MigrationInterface {
             type: "text",
           },
           {
-            name: "user_settings_id",
+            name: "settings_id",
             type: "uuid",
           },
         ],
         foreignKeys: [
           {
-            columnNames: ["user_settings_id"],
+            columnNames: ["settings_id"],
             referencedTableName: "user_settings",
             referencedColumnNames: ["id"],
             onDelete: "cascade",

@@ -37,6 +37,7 @@ export class AddConstantPresenceTable1735653188488 implements MigrationInterface
           {
             name: "office_id",
             type: "uuid",
+            isNullable: true,
           },
           {
             name: "created_at",
