@@ -1,13 +1,13 @@
 import { Controller, InternalServerErrorException } from "@nestjs/common";
-import BoltAction from "../../bolt/decorators/bolt-action.decorator";
-import Action from "../../bolt/enums/action.enum";
-import { BoltActionArgs } from "../../bolt/types/bolt-action-args.type";
-import { HomeTabService } from "../../gui/home-tab/home-tab.service";
-import { RegistrationView } from "../../gui/home-tab/views/registration/registration.view";
-import { PresenceService } from "./presence.service";
+import BoltAction from "../../../../bolt/decorators/bolt-action.decorator";
+import Action from "../../../../bolt/enums/action.enum";
+import { BoltActionArgs } from "../../../../bolt/types/bolt-action-args.type";
+import { PresenceService } from "../../../../entities/presence/presence.service";
+import { HomeTabService } from "../../home-tab.service";
+import { RegistrationView } from "./registration.view";
 
 @Controller()
-export class PresenceController {
+export class RegistrationController {
   constructor(
     private presenceService: PresenceService,
     private homeTab: HomeTabService,
@@ -49,7 +49,6 @@ export class PresenceController {
     await this.updateViewAfterAction(args);
   }
 
-  // TODO: Should this be moved?
   @BoltAction(Action.DAY_LIST_ITEM_OVERFLOW)
   async dayListItemOverflow(args: BoltActionArgs) {
     const { type, date } = JSON.parse(args.payload["selected_option"].value);

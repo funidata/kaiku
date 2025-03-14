@@ -1,3 +1,4 @@
+import { CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
 import { BoltModule } from "./bolt/bolt.module";
 import { ConfigModule } from "./common/config/config.module";
@@ -10,6 +11,7 @@ import { SyncModule } from "./sync/sync.module";
 
 @Module({
   imports: [
+    CacheModule.register({ isGlobal: true, ttl: 60 * 1000 }),
     ConfigModule,
     DatabaseModule,
     BoltModule,

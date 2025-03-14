@@ -17,7 +17,6 @@ import ViewAction from "../../../../../bolt/enums/view-action.enum";
 import dayjs from "../../../../../common/dayjs";
 import { ConstantPresence } from "../../../../../entities/constant-presence/constant-presence.model";
 import { ConstantPresenceService } from "../../../../../entities/constant-presence/constant-presence.service";
-import { Office } from "../../../../../entities/office/office.model";
 import { OfficeService } from "../../../../../entities/office/office.service";
 
 @Injectable()
@@ -28,11 +27,10 @@ export class ConstantPresenceManagementModal {
   ) {}
 
   async build(userId: string): Promise<Readonly<SlackModalDto>> {
-    const offices = await this.officeService.findAll();
     const presences = await this.cpService.findEffectiveByUserId(userId);
 
-    const selectBlocks = range(5).map((dayOfWeek) =>
-      this.constantPresenceSelect(offices, presences, dayOfWeek),
+    const selectBlocks = await Promise.all(
+      range(5).map((dayOfWeek) => this.constantPresenceSelect(presences, dayOfWeek)),
     );
 
     return Modal({
@@ -52,11 +50,8 @@ export class ConstantPresenceManagementModal {
       .buildToObject();
   }
 
-  private constantPresenceSelect(
-    offices: Office[],
-    presences: ConstantPresence[],
-    dayOfWeek: number,
-  ) {
+  private async constantPresenceSelect(presences: ConstantPresence[], dayOfWeek: number) {
+    const offices = await this.officeService.findAll();
     const existing = presences.find((presence) => presence.dayOfWeek === dayOfWeek);
 
     const options = offices.map((office) => Option({ text: office.name, value: office.id }));
